@@ -1,3 +1,5 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 import {BrowserRouter, Route, Switch} from "react-router-dom";
 
 import Top from "./contents/main/Top";

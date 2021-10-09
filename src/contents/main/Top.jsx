@@ -2,6 +2,7 @@ import { useState } from "react";
 import queryString from "query-string";
 
 import constants from "../../constants";
+import InputForm fron "./Input_form"
 
 
 const Top = (props) => {
@@ -15,20 +16,34 @@ const Top = (props) => {
     orderId: 0
   });
   const [productInformation, setProductInformation] = useState(null);
+  const [initialized, setInitialized] = useState(false);
   
   // ページ初期化
   const params = queryString.parse(props.location.search);
-  if ((!(isNaN(params.productid))) && (productInformation === null)){
-    setProductInformation(getProductInformation(params.productid));
+  if ((!(isNaN(params.productid))) && (productInformation === null) && (!(initialized))){
+    let productId = parseInt(params.productid);
+    setProductInformation(getProductInformation(productId));
+    setOrderFormData((s) => {...s, productId: productId});
+    setInitialized(true);
   }
   
-  return (<>
-    <p>productId param is {params.productid}</p>
-  </>);
+  if (orderStep === constants.ORDER_STEP_INPUT) {
+    return (
+      <InputForm productInformation={productInformation} orderFormData={orderFormData} setOrderFormData={setOrderFormData} setOrderStep={setOrderStep} />
+    );
+    }
 }
 
 function getProductInformation(id){
-  return {};
+  if (id === 1) {
+    return {
+      productId: id,
+      name: "oreore software",
+      edition: "Ultra Super Edition",
+      discription: "これは、ヤバイです。"
+    };
+  }
+  return null;
 }
 
 export default Top;
