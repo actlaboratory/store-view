@@ -2,7 +2,7 @@ import { useState } from "react";
 import queryString from "query-string";
 
 import constants from "../../constants";
-import InputForm fron "./Input_form"
+import InputForm from "./InputForm";
 
 
 const Top = (props) => {
@@ -23,7 +23,8 @@ const Top = (props) => {
   if ((!(isNaN(params.productid))) && (productInformation === null) && (!(initialized))){
     let productId = parseInt(params.productid);
     setProductInformation(getProductInformation(productId));
-    setOrderFormData((s) => {...s, productId: productId});
+    setOrderFormData((s) => ({...s, productId: productId}));
+    setOrderStep(constants.ORDER_STEP_INPUT);
     setInitialized(true);
   }
   
