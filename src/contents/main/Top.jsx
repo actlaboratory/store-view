@@ -3,6 +3,7 @@ import queryString from "query-string";
 
 import constants from "../../constants";
 import InputForm from "./InputForm";
+import ConfirmOrder from "./ConfirmOrder";
 
 
 const Top = (props) => {
@@ -11,8 +12,8 @@ const Top = (props) => {
     productId: 0,
     name: "",
     email: "",
-    quantity: 0,
-    paymentType: constants.PAYMENT_TYPE_CREDIT,
+    quantity: 1,
+    paymentType: "credit",
     orderId: 0
   });
   const [productInformation, setProductInformation] = useState(null);
@@ -32,7 +33,11 @@ const Top = (props) => {
     return (
       <InputForm productInformation={productInformation} orderFormData={orderFormData} setOrderFormData={setOrderFormData} setOrderStep={setOrderStep} />
     );
-    }
+  } else if (orderStep === constants.ORDER_STEP_CONFIRM) {
+    return (
+      <ConfirmOrder productInformation={productInformation} orderFormData={orderFormData} setOrderFormData={setOrderFormData} setOrderStep={setOrderStep} />
+    );
+  }
 }
 
 function getProductInformation(id){
@@ -41,7 +46,8 @@ function getProductInformation(id){
       productId: id,
       name: "oreore software",
       edition: "Ultra Super Edition",
-      discription: "これは、ヤバイです。"
+      discription: "これは、ヤバイです。",
+      price: 500
     };
   }
   return null;
