@@ -7,7 +7,7 @@ import Top from "./contents/main/Top";
 
 function App() {
     return (
-        <Container>
+        <Container style={{"max-width": "720px"}}>
             <BrowserRouter>
                 <Switch>
                     <Route path="/" component={Top} />
