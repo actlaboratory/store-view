@@ -4,6 +4,7 @@ import queryString from "query-string";
 import constants from "../../constants";
 import InputForm from "./InputForm";
 import ConfirmOrder from "./ConfirmOrder";
+import PaymentOrder from "./paymentOrder";
 
 
 const Top = (props) => {
@@ -36,6 +37,10 @@ const Top = (props) => {
   } else if (orderStep === constants.ORDER_STEP_CONFIRM) {
     return (
       <ConfirmOrder productInformation={productInformation} orderFormData={orderFormData} setOrderFormData={setOrderFormData} setOrderStep={setOrderStep} />
+    );
+  } else if (orderStep === constants.ORDER_STEP_PAYMENT) {
+    return (
+      <PaymentOrder orderFormData={orderFormData} setOrderStep={setOrderStep} />
     );
   }
 }
