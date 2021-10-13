@@ -43,6 +43,9 @@ const Top = (props) => {
       <PaymentOrder orderFormData={orderFormData} setOrderStep={setOrderStep} />
     );
   }
+  return (
+    <PaymentOrder orderFormData={orderFormData} setOrderStep={setOrderStep} />
+  );
 }
 
 function getProductInformation(id){
