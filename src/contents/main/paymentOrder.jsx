@@ -14,10 +14,43 @@ const PaymentOrder = (props) => {
 
 
     return (<>
-        <label htmlFor="cardNumber">カード番号入力</label>
-        <div id="cardNumber"></div>
-        <div id="cardExpiry"></div>
-        <div id="cardCvc"></div>
+        <Row className="bg-primary text-white mb-4">
+            <h2>支払い情報入力</h2>
+        </Row>
+        <Row className="p2 mb-2">
+            <p>以下に必要事項を入力し、確定ボタンを選択してください。</p>
+        </Row>
+        <Row className="p2">
+            <Col xs="12" md="3" className="mt-2">
+                <p className="mb-0"><label htmlFor="cardNumber">カード番号</label></p>
+            </Col>
+            <Col xs="12" md="9" className="p-2 bg-info">
+                <div id="cardNumber"></div>
+            </Col>
+            <Col xs="12" md="3" className="mt-2">
+                <p className="mb-0"><label htmlFor="cardExpiry">有効期限</label></p>
+            </Col>
+            <Col xs="12" md="9" className="p-2 bg-info">
+                <div id="cardExpiry"></div>
+            </Col>
+            <Col xs="12" md="3" className="mt-2">
+                <p className="mb-0"><label htmlFor="cardCvc">セキュリティコード (CVC)</label></p>
+            </Col>
+            <Col xs="12" md="9" className="p-2 bg-info">
+                <div id="cardCvc"></div>
+            </Col>
+        </Row>
+        <Row className="p-2 mt-2 bg-success">
+            <Col xs="12" md="8">
+                <p class="text-white">支払い確定後、変更や払い戻しはできません。</p>
+            </Col>
+            <Col xs="6" md="2" className="text-end">
+                <Button onClick={()=>{window.handleSubmit()}} variant="light">前へ</Button>
+            </Col>
+            <Col xs="12" md="2" className="text-end">
+                <Button onClick={()=>{window.handleSubmit()}} variant="light">次へ</Button>
+            </Col>
+        </Row>
     </>);
 }
 
