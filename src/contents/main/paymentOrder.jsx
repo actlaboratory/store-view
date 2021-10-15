@@ -1,15 +1,34 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Row, Col, Button } from "react-bootstrap";
 
 import settings from "../../settings";
+import constants from "../../constants";
 
 const PaymentOrder = (props) => {
+    const [modal, setModal] = useState({
+        show: false,
+        message: "",
+        onClick: null
+    });
+    
     useEffect(() => {
         const body = document.getElementsByTagName("body")[0];
         const setupScriptElm = document.createElement('script');
         setupScriptElm.type = 'text/javascript';
         setupScriptElm.appendChild(setupScript);
         body.appendChild(setupScriptElm);
+        window.setModal = setModal;
+        window.modalClose = () => {
+            setModal({
+                show: false,
+                message: "",
+                onClose: null
+            });
+        }
+        window.paied = ()=> {
+            window.modalClose();
+            props.setOrderStep(constants.ORDER_STEP_FINISH);
+        }
     }, []);
 
 
@@ -45,7 +64,7 @@ const PaymentOrder = (props) => {
                 <p class="text-white">支払い確定後、変更や払い戻しはできません。</p>
             </Col>
             <Col xs="6" md="2" className="text-end">
-                <Button onClick={()=>{window.handleSubmit()}} variant="light">前へ</Button>
+                <Button onClick={()=>{props.setOrderStep(constants.ORDER_STEP_NONE)}} variant="light">中止</Button>
             </Col>
             <Col xs="12" md="2" className="text-end">
                 <Button onClick={()=>{window.handleSubmit()}} variant="light">次へ</Button>
@@ -76,8 +95,13 @@ const setupScript = document.createTextNode("var payjp = Payjp('"+ settings.payj
 );
 
 const submitScript = document.createTextNode(
+    "setModal({"+
+    "show: true, message: 'カード決済中...', onClose: null"+
+    "});"+
     "payjp.createToken(cardNumber).then((r)=> {"+
-    "if (r.error){showErrorMessage(r.error.message);}"+
-    "else {paymentStep();}"+
+    "if (r.error){setModal({"+
+    "show: true, message: r.error.message, onClose: modalClose"+
+    "});}"+
+    "else {paied();}"+
     "});"
 );
