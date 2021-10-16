@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Row, Col, Button } from "react-bootstrap";
 
+import ModalDialog from "./ModalDialog";
 import settings from "../../settings";
 import constants from "../../constants";
 
@@ -10,7 +11,7 @@ const PaymentOrder = (props) => {
         message: "",
         onClick: null
     });
-    
+
     useEffect(() => {
         const body = document.getElementsByTagName("body")[0];
         const setupScriptElm = document.createElement('script');
@@ -26,6 +27,20 @@ const PaymentOrder = (props) => {
             });
         }
         window.paied = ()=> {
+            let result = createOrder("", "", "");
+            if (result.type === PAUSE) {
+                return setModal({
+                    show: true,
+                    message: result.message,
+                    onClose: window.modalClose
+                })
+            } else if (result.type === EXIT) {
+                return setModal({
+                    show: true,
+                    message: result.message,
+                    onClose: () => {window.modalClose(); props.setOrderStep(constants.ORDER_STEP_NONE);}
+                });
+            }
             window.modalClose();
             props.setOrderStep(constants.ORDER_STEP_FINISH);
         }
@@ -66,14 +81,17 @@ const PaymentOrder = (props) => {
             <Col xs="6" md="2" className="text-end">
                 <Button onClick={()=>{props.setOrderStep(constants.ORDER_STEP_NONE)}} variant="light">中止</Button>
             </Col>
-            <Col xs="12" md="2" className="text-end">
+            <Col xs="6" md="2" className="text-end">
                 <Button onClick={()=>{window.handleSubmit()}} variant="light">次へ</Button>
             </Col>
         </Row>
+
+        <ModalDialog {...modal} />
     </>);
 }
 
 const createOrder = (orderId, email, id) => {
+    
     return {type: EXIT, message:"申し訳ございません。現在、在庫切れです。恐れ入りますが、次回の入荷をお待ちください。"};
 }
 
@@ -91,17 +109,16 @@ const setupScript = document.createTextNode("var payjp = Payjp('"+ settings.payj
     "var cardCvcElm = elements.create('cardCvc');"+
     "cardNumberElm.mount('#cardNumber');"+
     "cardExpiryElm.mount('#cardExpiry');"+
-    "cardCvcElm.mount('#cardCvc');"
-);
-
-const submitScript = document.createTextNode(
+    "cardCvcElm.mount('#cardCvc');"+
+    "var handleSubmit = () => {"+
     "setModal({"+
     "show: true, message: 'カード決済中...', onClose: null"+
     "});"+
-    "payjp.createToken(cardNumber).then((r)=> {"+
+    "payjp.createToken(cardNumberElm).then((r)=> {"+
     "if (r.error){setModal({"+
     "show: true, message: r.error.message, onClose: modalClose"+
     "});}"+
     "else {paied();}"+
-    "});"
+    "});"+
+    "}"
 );
