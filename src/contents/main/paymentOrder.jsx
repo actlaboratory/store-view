@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Row, Col, Button } from "react-bootstrap";
+import axios from "axios";
 
 import ModalDialog from "./ModalDialog";
 import settings from "../../settings";
@@ -26,23 +27,8 @@ const PaymentOrder = (props) => {
                 onClose: null
             });
         }
-        window.paied = ()=> {
-            let result = createOrder("", "", "");
-            if (result.type === PAUSE) {
-                return setModal({
-                    show: true,
-                    message: result.message,
-                    onClose: window.modalClose
-                })
-            } else if (result.type === EXIT) {
-                return setModal({
-                    show: true,
-                    message: result.message,
-                    onClose: () => {window.modalClose(); props.setOrderStep(constants.ORDER_STEP_NONE);}
-                });
-            }
-            window.modalClose();
-            props.setOrderStep(constants.ORDER_STEP_FINISH);
+        window.paied = (cardToken)=> {
+            createOrder(cardToken, props, setModal);
         }
     }, []);
 
@@ -90,9 +76,24 @@ const PaymentOrder = (props) => {
     </>);
 }
 
-const createOrder = (orderId, email, id) => {
-    
-    return {type: EXIT, message:"申し訳ございません。現在、在庫切れです。恐れ入りますが、次回の入荷をお待ちください。"};
+const createOrder = (cardToken, props, setModal) => {
+    axios.post(settings.apiUrl + "pay", {
+        orderId: props.orderFormData.orderId,
+        email: props.orderFormData.email,
+        cardToken: cardToken
+    }).then((v) => {
+        setModal({
+            show: true,
+            message: v.reason,
+            onClose: a
+        });
+    }).catch((e) => {
+        setModal({
+            show: true,
+            message: "ダメでした。",
+            onClose: a
+        });
+    });
 }
 
 export default PaymentOrder;
