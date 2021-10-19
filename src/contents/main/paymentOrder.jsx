@@ -84,25 +84,44 @@ const createOrder = (cardToken, props, setModal) => {
     }).then((v) => {
         setModal({
             show: true,
-            message: v.reason,
-            onClose: a
+            message: v.data.reason,
+            onClose: () => {window.modalClose();}
         });
     }).catch((e) => {
         setModal({
             show: true,
             message: "ダメでした。",
-            onClose: a
+            onClose: () => {window.modalClose();}
         });
     });
+}
+
+const reason2Message = (reason) => {
+    if (reason === "invalid request") {
+        return "不明なエラーが発生しました。お手数ですが、時間をおいて、再度お試しください。";
+    } else if (reason === "invalid cardToken") {
+        return "エラーが発生しました。お手数ですが、時間をおいて、再度お試しください。";
+    } else if (reason === "invalid orderId") {
+        return "エラーが発生しました。お手数ですが、時間をおいて、再度お試しください。";
+    } else if (reason === "invalid email") {
+        return "エラーが発生しました。お手数ですが、時間をおいて、再度お試しください。";
+    } else if (reason === "order not found") {
+        return "エラーが発生しました。お手数ですが、時間をおいて、最初からやりなおしてください。";
+    } else if (reason === "no stock") {
+        return "申し訳ありません。現在在庫切れです。次回入荷をお待ちください。";
+    } else if (reason === "card error") {
+        return "カード決済に失敗しました。入力内容をご確認いただくか、別のカードをご利用ください。";
+    } else if (reason === "network error") {
+        return "現在、通信障害が発生しております。お手数ですが、時間をおいて、再度お試しください。";
+    } else {
+        return reason;
+    }
 }
 
 export default PaymentOrder;
 
 
 // constants
-const EXIT = 0;
-const PAUSE = 1;
-
 const setupScript = document.createTextNode("var payjp = Payjp('"+ settings.payjpPubKey +"');"+
     "var elements = payjp.elements();"+
     "var cardNumberElm = elements.create('cardNumber');"+
@@ -119,7 +138,7 @@ const setupScript = document.createTextNode("var payjp = Payjp('"+ settings.payj
     "if (r.error){setModal({"+
     "show: true, message: r.error.message, onClose: modalClose"+
     "});}"+
-    "else {paied();}"+
+    "else {paied(r.id);}"+
     "});"+
     "}"
 );

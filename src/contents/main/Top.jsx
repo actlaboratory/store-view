@@ -5,17 +5,18 @@ import constants from "../../constants";
 import InputForm from "./InputForm";
 import ConfirmOrder from "./ConfirmOrder";
 import PaymentOrder from "./paymentOrder";
+import OrderFinished from "./OrderFinished";
 
 
 const Top = (props) => {
-  const [orderStep, setOrderStep] = useState(constants.ORDER_STEP_NONE);
+  const [orderStep, setOrderStep] = useState(constants.ORDER_STEP_FINISH);
   const [orderFormData, setOrderFormData] = useState({
     productId: 0,
     name: "",
-    email: "",
+    email: "oreore@oresama.com",
     quantity: 1,
     paymentType: "credit",
-    orderId: 0
+    orderId: 3
   });
   const [productInformation, setProductInformation] = useState(null);
   const [initialized, setInitialized] = useState(false);
@@ -42,11 +43,13 @@ const Top = (props) => {
     return (
       <PaymentOrder orderFormData={orderFormData} setOrderStep={setOrderStep} />
     );
+  } else if (orderStep === constants.ORDER_STEP_FINISH) {
+    return (
+      <OrderFinished productInformation={productInformation} orderFormData={orderFormData} setOrderStep={setOrderStep} />
+    );
   }
-  return (
-    <PaymentOrder orderFormData={orderFormData} setOrderStep={setOrderStep} />
-  );
 }
+
 
 function getProductInformation(id){
   if (id === 1) {
