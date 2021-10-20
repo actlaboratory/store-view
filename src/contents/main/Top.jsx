@@ -63,10 +63,10 @@ function getProductInformation(id, func){
     if ((r.data.software)) {
       return func({
         productId: id,
-        name: "test",
-        edition: "testEdition",
+        name: r.data.software.name,
+        edition: r.data.software.edition,
         discription: r.data.software.discription,
-        price: 500
+        price: r.data.software.price
       });
     }
   });
