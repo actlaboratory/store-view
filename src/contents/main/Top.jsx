@@ -1,7 +1,9 @@
 import { useState } from "react";
 import queryString from "query-string";
+import axios from "axios";
 
 import constants from "../../constants";
+import settings from "../../settings";
 import InputForm from "./InputForm";
 import ConfirmOrder from "./ConfirmOrder";
 import PaymentOrder from "./paymentOrder";
@@ -9,14 +11,20 @@ import OrderFinished from "./OrderFinished";
 
 
 const Top = (props) => {
-  const [orderStep, setOrderStep] = useState(constants.ORDER_STEP_FINISH);
+  const setProductInformationProc = (info) => {
+    setProductInformation(info);
+    setOrderFormData((s) => ({...s, productId: info.productId}));
+    setOrderStep(constants.ORDER_STEP_INPUT);
+  }
+  const [orderStep, setOrderStep] = useState(constants.ORDER_STEP_NONE);
+
   const [orderFormData, setOrderFormData] = useState({
     productId: 0,
     name: "",
-    email: "oreore@oresama.com",
+    email: "",
     quantity: 1,
     paymentType: "credit",
-    orderId: 3
+    orderId: 0
   });
   const [productInformation, setProductInformation] = useState(null);
   const [initialized, setInitialized] = useState(false);
@@ -25,9 +33,7 @@ const Top = (props) => {
   const params = queryString.parse(props.location.search);
   if ((!(isNaN(params.productid))) && (productInformation === null) && (!(initialized))){
     let productId = parseInt(params.productid);
-    setProductInformation(getProductInformation(productId));
-    setOrderFormData((s) => ({...s, productId: productId}));
-    setOrderStep(constants.ORDER_STEP_INPUT);
+    getProductInformation(productId, setProductInformationProc);
     setInitialized(true);
   }
   
@@ -48,20 +54,22 @@ const Top = (props) => {
       <OrderFinished productInformation={productInformation} orderFormData={orderFormData} setOrderStep={setOrderStep} />
     );
   }
+  return (<p>読み込み中...</p>);
 }
 
 
-function getProductInformation(id){
-  if (id === 1) {
-    return {
-      productId: id,
-      name: "oreore software",
-      edition: "Ultra Super Edition",
-      discription: "これは、ヤバイです。",
-      price: 500
-    };
-  }
-  return null;
+function getProductInformation(id, func){
+  axios.get(settings.apiUrl + "getproduct?productid=" + id).then((r) => {
+    if ((r.data.software)) {
+      return func({
+        productId: id,
+        name: "test",
+        edition: "testEdition",
+        discription: r.data.software.discription,
+        price: 500
+      });
+    }
+  });
 }
 
 export default Top;

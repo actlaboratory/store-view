@@ -7,10 +7,10 @@ import constants from "../../constants";
 const InputForm = (props) => {
     
     const [formData, setFormData] = useState({
-        name: "",
-        email: "",
-        quantity: 0,
-        paymentType: "credit"
+        name: props.orderFormData.name,
+        email: props.orderFormData.email,
+        quantity: props.orderFormData.quantity,
+        paymentType: props.orderFormData.paymentType
     });
     const handleChange = (e) => {
         let k = e.target.name;
@@ -30,7 +30,12 @@ const InputForm = (props) => {
 
     let paymentTypeCombo = [];
     for (const [k,v] of Object.entries(constants.PAYMENT_TYPE_JAPANESE)) {
-        paymentTypeCombo.push(<option value={k}>{v}</option>);
+        paymentTypeCombo.push(<option key={k} value={k}>{v}</option>);
+    }
+
+    let quantityCombo = [];
+    for(let i=1; i <= 10; i++) {
+        quantityCombo.push(<option key={i} value={i}>{i}個</option>);
     }
     
     return (<>
@@ -69,26 +74,29 @@ const InputForm = (props) => {
                 <p><label htmlFor="orderForm-name">お名前</label></p>
             </Col>
             <Col xs="12" md="9" className="pb-2 mb-2">
-                <input name="name" value={props.orderFormData.name} onChange={handleChange} className="form-control" id="orderForm-name" type="text"/>
+                <input name="name" value={formData.name} onChange={handleChange} className="form-control" id="orderForm-name" type="text"/>
             </Col>
             <Col xs="12" md="3">
                 <p><label htmlFor="orderForm-email">メールアドレス</label></p>
             </Col>
             <Col xs="12" md="9" className="pb-2 mb-2">
-                <input name="email" value={props.orderFormData.email} onChange={handleChange} className="form-control" id="orderForm-email" type="text"/>
+                <input name="email" value={formData.email} onChange={handleChange} className="form-control" id="orderForm-email" type="text"/>
             </Col>
             <Col xs="6" md="3">
-                <p><label htmlFor="orderForm-quantity">購入個数（最大10）</label></p>
+                <p><label htmlFor="orderForm-quantity">購入個数</label></p>
             </Col>
-            <Col xs="4" md="2" className="pb-2 mb-2">
-                <input name="quantity" value={props.orderFormData.quantity} onChange={handleChange} className="form-control" id="orderForm-quantity" type="number" min="1" max="10" step="1" />
+            <Col xs="6" md="9" className="pb-2 mb-2">
+                <Col md="3">
+                    <select name="quantity" value={formData.quantity} onChange={handleChange} className="form-control">{quantityCombo}</select>
+                </Col>
             </Col>
-            <Col xs="2" md="7" className="pt-2">個</Col>
             <Col xs="6" md="3">
                 <p><label htmlFor="orderForm-paymentType">支払い方法</label></p>
             </Col>
-            <Col xs="6" md="5" className="pb-2 mb-2">
-                <select name="paymentType" value={FormData.paymentType} onChange={handleChange} className="form-control">{paymentTypeCombo}</select>
+            <Col xs="6" md="9" className="pb-2 mb-2">
+                <Col md="5">
+                    <select name="paymentType" value={formData.paymentType} onChange={handleChange} className="form-control">{paymentTypeCombo}</select>
+                </Col>
             </Col>
         </Row>
         <Row className="p2 mt-2">
