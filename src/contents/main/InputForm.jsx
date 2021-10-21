@@ -1,6 +1,8 @@
+import axios from "axios";
 import { useState } from "react";
 import { Row, Col, Button } from "react-bootstrap";
 
+import settings from "../../settings";
 import constants from "../../constants";
 
 
@@ -18,7 +20,11 @@ const InputForm = (props) => {
     }
     const handleSubmit = () => {
         props.setOrderFormData({...formData, productId: props.productInformation.productId, quantity: parseInt(formData.quantity)});
-        props.setOrderStep(constants.ORDER_STEP_CONFIRM);
+        axios.post(settings.apiUrl + "setemail", {"email": formData.email}).then((r)=> {
+            if (r.data.code === 200) {
+                props.setOrderStep(constants.ORDER_STEP_CONFIRM);
+            }
+        });
     }
 
     let message = validateForm(formData);
