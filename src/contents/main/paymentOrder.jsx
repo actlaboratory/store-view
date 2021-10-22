@@ -110,7 +110,7 @@ const reason2Message = (reason) => {
         return "エラーが発生しました。お手数ですが、時間をおいて、最初からやりなおしてください。";
     } else if (reason === "no stock") {
         return "申し訳ありません。現在在庫切れです。次回入荷をお待ちください。";
-    } else if (reason === "card error") {
+    } else if ((reason === "card error") || (reason === "cvc error")) {
         return "カード決済に失敗しました。入力内容をご確認いただくか、別のカードをご利用ください。";
     } else if (reason === "network error") {
         return "現在、通信障害が発生しております。お手数ですが、時間をおいて、再度お試しください。";
