@@ -85,7 +85,7 @@ const createOrder = (cardToken, props, setModal) => {
     }).then((v) => {
         setModal({
             show: true,
-            message: v.data.reason,
+            message: reason2Message(v.data.reason),
             onClose: () => {window.modalClose();}
         });
     }).catch((e) => {
