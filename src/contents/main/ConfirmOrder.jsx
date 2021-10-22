@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Row, Col, Button } from "react-bootstrap";
+import axios from "axios";
 
+import settings from "../../settings";
 import constants from "../../constants";
 
 
@@ -16,8 +18,9 @@ const ConfirmOrder = (props) => {
         setMessage("注文を確定し、支払いに進みます。");
     }
     const handleSubmit = () => {
+        let data = {...props.orderFormData, ...formData};
         props.setOrderFormData({...props.orderFormData, confirmationCode: formData.confirmationCode});
-        setMessage(setOrder({...props.orderFormData, confirmationCode: formData.confirmationCode}));
+        sendOrder(data, setMessage, props.setOrderFormData, props.setOrderStep);
     }
 
     let totalPrice = props.productInformation.price * props.orderFormData.quantity;
@@ -107,6 +110,18 @@ const ConfirmOrder = (props) => {
 
 const setOrder = (data) => {
     return "認証コードが誤っています。"
+}
+
+const sendOrder = (formData, setMessage, setFormData, setOrderStep) => {
+    axios.post(settings.apiUrl + "order", formData).then((r) => {
+        if (r.data.reason) {
+            setMessage(r.data.reason);
+        }
+        if ((r.data.code === 200) && (r.data.orderId)) {
+            setFormData(s => ({...s, orderId: r.data.orderId}));
+            setOrderStep(constants.ORDER_STEP_PAYMENT);
+        }
+    })
 }
 
 export default ConfirmOrder;
