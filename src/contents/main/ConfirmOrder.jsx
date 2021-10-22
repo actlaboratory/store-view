@@ -19,7 +19,6 @@ const ConfirmOrder = (props) => {
     }
     const handleSubmit = () => {
         let data = {...props.orderFormData, ...formData};
-        props.setOrderFormData({...props.orderFormData, confirmationCode: formData.confirmationCode});
         sendOrder(data, setMessage, props.setOrderFormData, props.setOrderStep);
     }
 
@@ -114,9 +113,6 @@ const setOrder = (data) => {
 
 const sendOrder = (formData, setMessage, setFormData, setOrderStep) => {
     axios.post(settings.apiUrl + "order", formData).then((r) => {
-        if (r.data.reason) {
-            setMessage(r.data.reason);
-        }
         if ((r.data.code === 200) && (r.data.orderId)) {
             setFormData(s => ({...s, orderId: r.data.orderId}));
             setOrderStep(constants.ORDER_STEP_PAYMENT);

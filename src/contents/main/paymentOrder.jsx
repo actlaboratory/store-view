@@ -77,6 +77,7 @@ const PaymentOrder = (props) => {
 }
 
 const createOrder = (cardToken, props, setModal) => {
+    console.log(props.orderFormData);
     axios.post(settings.apiUrl + "pay", {
         orderId: props.orderFormData.orderId,
         email: props.orderFormData.email,
