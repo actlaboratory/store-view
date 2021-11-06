@@ -83,11 +83,17 @@ const createOrder = (cardToken, props, setModal) => {
         email: props.orderFormData.email,
         cardToken: cardToken
     }).then((v) => {
-        setModal({
-            show: true,
-            message: reason2Message(v.data.reason),
-            onClose: () => {window.modalClose();}
-        });
+        if (v.data.code === 200) {
+            props.setSerialnumbers(v.data.serialnumbers);
+            props.setOrderStep(constants.ORDER_STEP_FINISH);
+        } else{
+            console.log(v.data);
+            setModal({
+                show: true,
+                message: reason2Message(v.data.reason),
+                onClose: () => {window.modalClose();}
+            });
+        }
     }).catch((e) => {
         setModal({
             show: true,
