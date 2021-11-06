@@ -5,17 +5,26 @@ import constants from "../../constants";
 
 
 const OrderFinished = (props) => {
-    const [message, setMessage] = useState("");
+    let message = "";
     let topMessage = "";
     let labelMessage = "";
     if (props.orderFormData.paymentType === "credit") {
-        topMessage = "ご注文ありがとうございました。認証キーを発行いたしましたので、ご確認の上、大切に保管してください。";
-        labelMessage = "認証キー情報";
+        topMessage = "ご注文ありがとうございました。シリアル番号を発行いたしましたので、ご確認の上、大切に保管してください。";
+        labelMessage = "シリアル番号一覧";
+        message = "* " + props.serialnumbers.join("\n* ");
     } else if (props.orderFormData.paymentType === "transfer") {
-        topMessage = "ご注文ありがとうございました。7日以内に、以下の内容にてお振込みください。お支払いが確認できましたら、認証キーをメールにてお送りさせていただきます。";
+        topMessage = "ご注文ありがとうございました。7日以内に、以下の内容にてお振込みください。お支払いが確認できましたら、シリアル番号をメールにてお送りさせていただきます。";
         labelMessage = "お支払い情報";
+        message = "振込先:"
+            + constants.BANK_NAME + constants.BANK_BRANCH
+            + "\n" + constants.BANK_ACCOUNT + " " + constants.BANK_ACCOUNT_NO
+            + "\n口座名義: " + constants.BANK_ACCOUNT_OWNER
+            + "\n* 振込任命には、注文者名と注文番号を併記してください。";
     }
     let price = parseInt(props.orderFormData.quantity * props.productInformation.price * (1 + constants.TAX_RATE));
+    if (props.orderFormData.paymentType === "transfer") {
+        price = price + constants.TRANSFER_FEE * (1 + constants.TAX_RATE);
+    }
     
     const handleSubmit = () => {
         props.setOrderStep(constants.ORDER_STEP_NONE);
@@ -57,7 +66,7 @@ const OrderFinished = (props) => {
                 <p><label>{labelMessage}</label></p>
             </Col>
             <Col xs="12" md="9" className="mb-2">
-                <p style={{whiteSpace: "pre-wrap"}}>{message}</p>
+                <textarea value={message} />
             </Col>
         </Row>
         <Row className="p2 mt-2">

@@ -23,6 +23,9 @@ const ConfirmOrder = (props) => {
     }
 
     let totalPrice = props.productInformation.price * props.orderFormData.quantity;
+    if (props.orderFormData.paymentType === "transfer") {
+        totalPrice = totalPrice + constants.TRANSFER_FEE;
+    }
 
     return (<>
         <Row className="bg-primary text-white mb-4">
