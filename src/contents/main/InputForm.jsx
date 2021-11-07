@@ -36,7 +36,11 @@ const InputForm = (props) => {
 
     let paymentTypeCombo = [];
     for (const [k,v] of Object.entries(constants.PAYMENT_TYPE_JAPANESE)) {
-        paymentTypeCombo.push(<option key={k} value={k}>{v}</option>);
+        if (k === "transfer") {
+            paymentTypeCombo.push(<option key={k} value={k}>{v + " (支払い事務手数料" + constants.TRANSFER_FEE * (1 + constants.TAX_RATE)}円)</option>);
+        } else {
+            paymentTypeCombo.push(<option key={k} value={k}>{v}</option>);
+        }
     }
 
     let quantityCombo = [];

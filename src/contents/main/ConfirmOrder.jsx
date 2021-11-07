@@ -72,7 +72,7 @@ const ConfirmOrder = (props) => {
                 <p>{props.orderFormData.email}</p>
             </Col>
             <Col xs="6" md="3">
-                <p><label>購入個数（最大10）</label></p>
+                <p><label>購入個数</label></p>
             </Col>
             <Col xs="12" md="9" className="mb-2">
                 <p>{props.orderFormData.quantity} 個</p>
@@ -82,6 +82,7 @@ const ConfirmOrder = (props) => {
             </Col>
             <Col xs="12" md="9" className="mb-2">
                 <p>{parseInt(totalPrice * (1 + constants.TAX_RATE))} 円</p>
+                { (props.orderFormData.paymentType === "transfer") && (<p>（支払い事務手数料込み）</p>)}
             </Col>
             <Col xs="6" md="3">
                 <p><label>支払い方法</label></p>

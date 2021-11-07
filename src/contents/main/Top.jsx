@@ -28,6 +28,7 @@ const Top = (props) => {
   });
   const [productInformation, setProductInformation] = useState(null);
   const [initialized, setInitialized] = useState(false);
+  const [serialnumbers, setSerialnumbers] = useState(null);
   
   // ページ初期化
   const params = queryString.parse(props.location.search);
@@ -46,12 +47,15 @@ const Top = (props) => {
       <ConfirmOrder productInformation={productInformation} orderFormData={orderFormData} setOrderFormData={setOrderFormData} setOrderStep={setOrderStep} />
     );
   } else if (orderStep === constants.ORDER_STEP_PAYMENT) {
+    if (orderFormData.paymentType === "transfer") {
+      setOrderStep(constants.ORDER_STEP_FINISH);
+    }
     return (
-      <PaymentOrder orderFormData={orderFormData} setOrderStep={setOrderStep} />
+      <PaymentOrder orderFormData={orderFormData} setOrderStep={setOrderStep} setSerialnumbers={setSerialnumbers} />
     );
   } else if (orderStep === constants.ORDER_STEP_FINISH) {
     return (
-      <OrderFinished productInformation={productInformation} orderFormData={orderFormData} setOrderStep={setOrderStep} />
+      <OrderFinished productInformation={productInformation} orderFormData={orderFormData} setOrderStep={setOrderStep} serialnumbers={serialnumbers} />
     );
   }
   return (<p>読み込み中...</p>);

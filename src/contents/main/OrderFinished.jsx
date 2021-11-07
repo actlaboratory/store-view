@@ -16,10 +16,11 @@ const OrderFinished = (props) => {
         topMessage = "ご注文ありがとうございました。7日以内に、以下の内容にてお振込みください。お支払いが確認できましたら、シリアル番号をメールにてお送りさせていただきます。";
         labelMessage = "お支払い情報";
         message = "振込先:"
-            + constants.BANK_NAME + constants.BANK_BRANCH
+            + "\n" + constants.BANK_NAME + constants.BANK_BRANCH
             + "\n" + constants.BANK_ACCOUNT + " " + constants.BANK_ACCOUNT_NO
             + "\n口座名義: " + constants.BANK_ACCOUNT_OWNER
-            + "\n* 振込任命には、注文者名と注文番号を併記してください。";
+            + "\n* 振込人名には、注文番号と、先ほどご入力されたお名前を指定してください。（例：　13 ヤマダタロウ）"
+            + "\n* 上記金額を、振込手数料お客様負担にてお支払いください。";
     }
     let price = parseInt(props.orderFormData.quantity * props.productInformation.price * (1 + constants.TAX_RATE));
     if (props.orderFormData.paymentType === "transfer") {
@@ -38,6 +39,18 @@ const OrderFinished = (props) => {
             <p>{topMessage}</p>
         </Row>
         <Row className="p2">
+            <Col xs="12" md="3">
+                <p><label>注文番号</label></p>
+            </Col>
+            <Col xs="12" md="9" className="mb-2">
+                <p>{props.orderFormData.orderId}</p>
+            </Col>
+            <Col xs="12" md="3">
+                <p><label>＜お名前</label></p>
+            </Col>
+            <Col xs="12" md="9" className="mb-2">
+                <p>{props.orderFormData.name}</p>
+            </Col>
             <Col xs="12" md="3">
                 <p><label>製品名</label></p>
             </Col>
@@ -66,7 +79,7 @@ const OrderFinished = (props) => {
                 <p><label>{labelMessage}</label></p>
             </Col>
             <Col xs="12" md="9" className="mb-2">
-                <textarea value={message} />
+                <textarea className="form-control" value={message} />
             </Col>
         </Row>
         <Row className="p2 mt-2">
