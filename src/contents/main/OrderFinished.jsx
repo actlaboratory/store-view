@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom"; import "react-router-dom";
 import { Row, Col, Button } from "react-bootstrap";
 
 import constants from "../../constants";
@@ -25,10 +26,6 @@ const OrderFinished = (props) => {
     let price = parseInt(props.orderFormData.quantity * props.productInformation.price * (1 + constants.TAX_RATE));
     if (props.orderFormData.paymentType === "transfer") {
         price = price + constants.TRANSFER_FEE * (1 + constants.TAX_RATE);
-    }
-    
-    const handleSubmit = () => {
-        props.setOrderStep(constants.ORDER_STEP_NONE);
     }
 
     return (<>
@@ -87,7 +84,7 @@ const OrderFinished = (props) => {
                 <p>上記内容は、なくさないように、大切に保管してください。</p>
             </Col>
             <Col xs="12" md="4" className="text-end">
-                <Button onClick={()=>{handleSubmit()}} variant="success">内容を確認し、保存しました</Button>
+                <Button variant="success" onClick={() => {window.location.href = "https://actlab.org/"}}>内容を確認し、保存しました</Button>
             </Col>
         </Row>
     </>);

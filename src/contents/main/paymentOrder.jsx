@@ -65,7 +65,7 @@ const PaymentOrder = (props) => {
                 <p class="text-white">支払い確定後、変更や払い戻しはできません。</p>
             </Col>
             <Col xs="6" md="2" className="text-end">
-                <Button onClick={()=>{props.setOrderStep(constants.ORDER_STEP_NONE)}} variant="light">中止</Button>
+                <Button onClick={()=>{window.location.href = "https://actlab.org/"}} variant="light">中止</Button>
             </Col>
             <Col xs="6" md="2" className="text-end">
                 <Button onClick={()=>{window.handleSubmit()}} variant="light">次へ</Button>
