@@ -120,8 +120,23 @@ const sendOrder = (formData, setMessage, setFormData, setOrderStep) => {
         if ((r.data.code === 200) && (r.data.orderId)) {
             setFormData(s => ({...s, orderId: r.data.orderId}));
             setOrderStep(constants.ORDER_STEP_PAYMENT);
+        } else if (r.data.reason) {
+            if (r.data.reason === "confirmation faild") {
+                return window.location = "https://actlab.org/";
+            }
+            setMessage(getMessage(r.data.reason));
         }
-    })
+    }, (e) => {
+        setMessage("不明なエラーが発生しました。時間をおいて、再度お試しください。");
+    });
+}
+
+const getMessage = (reason) => {
+    if (reason === "wrong confirmation code") {
+        return "認証コードが誤っています。一定数以上間違えると、注文を中止し、トップページに移動します。";
+    } else {
+        return "不明なエラーが発生しました。時間をおいて、再度お試しください。";
+    }
 }
 
 export default ConfirmOrder;
