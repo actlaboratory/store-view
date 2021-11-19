@@ -83,7 +83,7 @@ const createOrder = (cardToken, props, setModal) => {
         email: props.orderFormData.email,
         cardToken: cardToken
     }).then((v) => {
-        if ((typeof v.data) == "object") {
+        if ((typeof v.data) != "object") {
             return window.location = "/error";
         }
         if (v.data.code === 200) {
