@@ -4,12 +4,16 @@ import { Container } from "react-bootstrap";
 import {BrowserRouter, Route, Switch} from "react-router-dom";
 
 import Top from "./contents/main/Top";
+import Error from "./contents/error/Error";
+import SharedHeader from "./contents/shared/Header";
 
 function App() {
     return (
         <Container style={{"max-width": "720px"}}>
+            <SharedHeader />
             <BrowserRouter>
                 <Switch>
+                    <Route path="/error" component={Error} />
                     <Route path="/" component={Top} />
                 </Switch>
             </BrowserRouter>

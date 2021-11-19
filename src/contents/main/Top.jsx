@@ -64,6 +64,9 @@ const Top = (props) => {
 
 function getProductInformation(id, func){
   axios.get(settings.apiUrl + "getproduct?productid=" + id).then((r) => {
+    if   ((typeof r.data) != "object") {
+      return window.location = "/error";
+    }
     if ((r.data.software)) {
       return func({
         productId: id,
@@ -73,6 +76,8 @@ function getProductInformation(id, func){
         price: r.data.software.price
       });
     }
+  }).catch((e) => {
+    window.location = "error";
   });
 }
 

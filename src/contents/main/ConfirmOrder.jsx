@@ -117,6 +117,9 @@ const setOrder = (data) => {
 
 const sendOrder = (formData, setMessage, setFormData, setOrderStep) => {
     axios.post(settings.apiUrl + "order", formData).then((r) => {
+        if   ((typeof r.data) == "object") {
+            return window.location = "/error";
+        }
         if ((r.data.code === 200) && (r.data.orderId)) {
             setFormData(s => ({...s, orderId: r.data.orderId}));
             setOrderStep(constants.ORDER_STEP_PAYMENT);
@@ -127,7 +130,7 @@ const sendOrder = (formData, setMessage, setFormData, setOrderStep) => {
             setMessage(getMessage(r.data.reason));
         }
     }, (e) => {
-        setMessage("不明なエラーが発生しました。時間をおいて、再度お試しください。");
+        window.location = "error";
     });
 }
 

@@ -83,11 +83,13 @@ const createOrder = (cardToken, props, setModal) => {
         email: props.orderFormData.email,
         cardToken: cardToken
     }).then((v) => {
+        if ((typeof v.data) == "object") {
+            return window.location = "/error";
+        }
         if (v.data.code === 200) {
             props.setSerialnumbers(v.data.serialnumbers);
             props.setOrderStep(constants.ORDER_STEP_FINISH);
         } else{
-            console.log(v.data);
             setModal({
                 show: true,
                 message: reason2Message(v.data.reason),
@@ -97,7 +99,7 @@ const createOrder = (cardToken, props, setModal) => {
     }).catch((e) => {
         setModal({
             show: true,
-            message: "ダメでした。",
+            message: "不明なエラーが発生しました。恐れ入りますが、時間をおいて、再度お試しください。",
             onClose: () => {window.modalClose();}
         });
     });
