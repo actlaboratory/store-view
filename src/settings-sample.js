@@ -1,5 +1,6 @@
 const settings = {
-    payjpPubKey: ""
+    payjpPubKey: "",
+	apiurl: "/api/",
 };
 
 export default settings;
