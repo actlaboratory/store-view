@@ -129,10 +129,10 @@ const InputForm = (props) => {
 
 const validateForm = (data) => {
     let errMessages = [];
-    if (data.name.length < 1) {
+    if (data.name.length < 2) {
         errMessages.push("・お名前を、２文字以上で入力してください。");
     }
-    if (!(/^.+@.+\..*[a-zA-Z]$/.test(data.email))) {
+    if (!(/^([a-zA-Z0-9][._\-?+]?)+[a-zA-Z0-9]@([a-zA-Z0-9]+\.)+[a-zA-Z0-9]+$/.test(data.email))) {
         errMessages.push("・メールアドレスが誤っています。");
     }
     if ((isNaN(data.quantity)) || (parseInt(data.quantity) <= 0) || (parseInt(data.quantity) > 10)) {
