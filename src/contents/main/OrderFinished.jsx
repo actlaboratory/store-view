@@ -76,7 +76,7 @@ const OrderFinished = (props) => {
                 <p><label>{labelMessage}</label></p>
             </Col>
             <Col xs="12" md="9" className="mb-2">
-                <textarea rows="10" className="form-control" style="overflow:hidden;" value={message} />
+                <textarea rows="10" className="form-control" style={{overflow: "hidden"}} value={message} />
             </Col>
         </Row>
         <Row className="p2 mt-2">
