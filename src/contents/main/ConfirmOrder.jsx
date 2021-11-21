@@ -12,10 +12,17 @@ const ConfirmOrder = (props) => {
         confirmationCode: ""
     });
     const [message, setMessage] = useState("");
+    const [ successButton, setSuccessButton ] = useState(false);
     const handleChange = (e) => {
         let k = e.target.name;
         setFormData(s => ({...s, [k]: e.target.value}));
-        setMessage("注文を確定し、支払いに進みます。");
+        if (e.target.value.match(/^[0-9]{6}$/g) === null) {
+            setMessage("認証コードの形式が誤っています。");
+            setSuccessButton(false);
+        } else {
+            setMessage("注文を確定し、支払いに進みます。");
+            setSuccessButton(true);
+        }
     }
     const handleSubmit = () => {
         let data = {...props.orderFormData, ...formData};
@@ -105,7 +112,7 @@ const ConfirmOrder = (props) => {
                 <Button onClick={()=> {props.setOrderStep(constants.ORDER_STEP_INPUT)}} valiant="success">戻る</Button>
             </Col>
             <Col xs="6" md="2" className="text-end">
-                {formData.confirmationCode && <Button onClick={()=>{handleSubmit()}} variant="success">次へ</Button>}
+                {successButton && <Button onClick={()=>{handleSubmit()}} variant="success">次へ</Button>}
             </Col>
         </Row>
     </>);
