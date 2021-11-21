@@ -46,18 +46,21 @@ const PaymentOrder = (props) => {
             </Col>
             <Col xs="12" md="9" className="p-2 bg-info">
                 <div id="cardNumber"></div>
+                <p>カード番号は、16桁です。（例）0000111122223333</p>
             </Col>
             <Col xs="12" md="3" className="mt-2">
                 <p className="mb-0"><label htmlFor="cardExpiry">有効期限</label></p>
             </Col>
             <Col xs="12" md="9" className="p-2 bg-info">
                 <div id="cardExpiry"></div>
+                <p>有効期限は、月2桁、年2桁の順で入力します。（例）0322</p>
             </Col>
             <Col xs="12" md="3" className="mt-2">
                 <p className="mb-0"><label htmlFor="cardCvc">セキュリティコード (CVC)</label></p>
             </Col>
             <Col xs="12" md="9" className="p-2 bg-info">
                 <div id="cardCvc"></div>
+                <p>セキュリティコード（CVC）は、カード裏面の署名欄右上に記載の3桁の数字です。カードにより、記載位置が異なる場合や、4桁の場合があります。（例）555</p>
             </Col>
         </Row>
         <Row className="p-2 mt-2 bg-success">
