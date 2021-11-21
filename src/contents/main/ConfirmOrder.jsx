@@ -57,7 +57,7 @@ const ConfirmOrder = (props) => {
                 <p><label>価格</label></p>
             </Col>
             <Col xs="12" md="9" className="mb-2">
-                <p>{parseInt(props.productInformation.price * (1 + constants.TAX_RATE))} 円</p>
+                <p>{parseInt(props.productInformation.price * (1 + constants.TAX_RATE)).toLocaleString()} 円</p>
             </Col>
             <Col xs="12" md="3">
                 <p><label>お名前</label></p>
@@ -81,7 +81,7 @@ const ConfirmOrder = (props) => {
                 <p><label>注文合計</label></p>
             </Col>
             <Col xs="12" md="9" className="mb-2">
-                <p>{parseInt(totalPrice * (1 + constants.TAX_RATE))} 円</p>
+                <p>{parseInt(totalPrice * (1 + constants.TAX_RATE)).toLocaleString()} 円</p>
                 { (props.orderFormData.paymentType === "transfer") && (<p>（支払い事務手数料込み）</p>)}
             </Col>
             <Col xs="6" md="3">

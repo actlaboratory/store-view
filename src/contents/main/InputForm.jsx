@@ -85,7 +85,7 @@ const InputForm = (props) => {
                 <p><label>価格</label></p>
             </Col>
             <Col xs="12" md="9" className="mb-2">
-                <p>{parseInt(props.productInformation.price * (1 + constants.TAX_RATE))} 円</p>
+                <p>{parseInt(props.productInformation.price * (1 + constants.TAX_RATE)).toLocaleString()} 円</p>
             </Col>
             <Col xs="12" md="3">
                 <p><label htmlFor="orderForm-name">お名前</label></p>

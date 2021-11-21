@@ -27,6 +27,7 @@ const OrderFinished = (props) => {
     if (props.orderFormData.paymentType === "transfer") {
         price = price + constants.TRANSFER_FEE * (1 + constants.TAX_RATE);
     }
+    price = price.toLocaleString();
 
     return (<>
         <Row className="bg-primary text-white mb-4">
