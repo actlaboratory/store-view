@@ -44,7 +44,7 @@ const OrderFinished = (props) => {
                 <p>{props.orderFormData.orderId}</p>
             </Col>
             <Col xs="12" md="3">
-                <p><label>＜お名前</label></p>
+                <p><label>お名前</label></p>
             </Col>
             <Col xs="12" md="9" className="mb-2">
                 <p>{props.orderFormData.name}</p>
