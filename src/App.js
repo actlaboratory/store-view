@@ -12,16 +12,15 @@ import SharedHeader from "./contents/shared/Header";
 
 function App() {
   React.useEffect(() => {
-    alert(document.body.firstChild);
-    let ad = document.body.firstChild.children;
-    if (ad) {
-      alert("ad element count " + ad.length);
-      for (let i = 0; i < ad.length; i++) {
-        alert("" + i + ": " + ad[i].nodeName);
+    let addiv = document.getElementById("vdbanner");
+    if (addiv) {
+      let ad = addiv.firstChild;
+      if (ad) {
+        ad.setAttribute("aria-hidden", "true");
+        ad.setAttribute("tabindex", "-1");
       }
     }
   }, []);
-
   return (
     <Container style={{ "max-width": "720px" }}>
       <SharedHeader />
