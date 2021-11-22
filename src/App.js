@@ -18,7 +18,7 @@ function App() {
             elem.setAttribute("aria-hidden", "true");
             elem.setAttribute("tabindex", "-1");
         }
-    }, []);
+    });
 
     return (
         <Container style={{"max-width": "720px"}}>
