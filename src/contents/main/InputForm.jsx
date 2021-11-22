@@ -21,6 +21,7 @@ const InputForm = (props) => {
     const handleSubmit = () => {
         props.setOrderFormData({...formData, productId: props.productInformation.productId, quantity: parseInt(formData.quantity)});
         axios.post(settings.apiUrl + "setemail", {"email": formData.email}).then((r)=> {
+            // return console.log(r.data);
             if   ((typeof r.data) != "object") {
                 return window.location = "/error";
             }
@@ -30,6 +31,7 @@ const InputForm = (props) => {
                 window.location = "error";
             }
         }).catch((e) => {
+            // return console.log(e.response.data);
             window.location = "error";
         });
     }
