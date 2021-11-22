@@ -34,7 +34,7 @@ const OrderFinished = (props) => {
             <h2>注文完了</h2>
         </Row>
         <Row className="p2 mb-2">
-            <p>{topMessage}</p>
+            <p role="alert">{topMessage}</p>
         </Row>
         <Row className="p2">
             <Col xs="12" md="3">

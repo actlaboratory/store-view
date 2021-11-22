@@ -65,7 +65,7 @@ const PaymentOrder = (props) => {
         </Row>
         <Row className="p-2 mt-2 bg-success">
             <Col xs="12" md="8">
-                <p class="text-white">支払い確定後、変更や払い戻しはできません。</p>
+                <p className="text-white">支払い確定後、変更や払い戻しはできません。</p>
             </Col>
             <Col xs="6" md="2" className="text-end">
                 <Button onClick={()=>{window.location.href = "https://actlab.org/"}} variant="light">中止</Button>
@@ -80,7 +80,7 @@ const PaymentOrder = (props) => {
 }
 
 const createOrder = (cardToken, props, setModal) => {
-    console.log(props.orderFormData);
+    //console.log(props.orderFormData);
     axios.post(settings.apiUrl + "pay", {
         orderId: props.orderFormData.orderId,
         email: props.orderFormData.email,
@@ -121,12 +121,14 @@ const reason2Message = (reason) => {
         return "エラーが発生しました。お手数ですが、時間をおいて、最初からやりなおしてください。";
     } else if (reason === "no stock") {
         return "申し訳ありません。現在在庫切れです。次回入荷をお待ちください。";
-    } else if ((reason === "card error") || (reason === "cvc error")) {
+    } else if (reason === "cvc error") {
         return "カード決済に失敗しました。入力内容をご確認いただくか、別のカードをご利用ください。";
+    } else if (reason === "card error") {
+        return "カード決済に失敗しました。別のカードをご利用いただくか、発行元のカード会社にお問い合わせください。";
     } else if (reason === "network error") {
         return "現在、通信障害が発生しております。お手数ですが、時間をおいて、再度お試しください。";
     } else {
-        return reason;
+        return "エラーが発生しました。恐れ入りますが、時間をおいて、再度お試しください。";
     }
 }
 
