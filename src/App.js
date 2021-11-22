@@ -1,3 +1,4 @@
+import React from 'react';
 import 'react-app-polyfill/ie11';
 import 'react-app-polyfill/stable';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -10,6 +11,15 @@ import Error from "./contents/error/Error";
 import SharedHeader from "./contents/shared/Header";
 
 function App() {
+    React.useEffect(()=>{
+        let elems = document.getElementById("adspace").childNodes;
+        if(elems.length==4){
+            let elem = elems[2];
+            elem.setAttribute("aria-hidden", "true");
+            elem.setAttribute("tabindex", "-1");
+        }
+    }, []);
+
     return (
         <Container style={{"max-width": "720px"}}>
             <SharedHeader />
