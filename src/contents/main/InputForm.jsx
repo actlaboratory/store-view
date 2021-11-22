@@ -63,7 +63,11 @@ const InputForm = (props) => {
         </Row>
         <Row className="p2 mb-2">
             <p>以下に必要事項を入力し、次へボタンを選択してください。</p>
-            <p>*ご注文される際は、GoogleChrome、またはFirefoxのそれぞれ最新版をご利用ください。InternetExplorerやNetReaderなどでは、クレジットカード決済を行うことができません。</p>
+            <p>
+				*クレジットカード決済でご注文される際は、GoogleChrome、またはFirefoxのそれぞれ最新版をご利用ください。
+				InternetExplorerではクレジットカード決済を行うことができませんので、銀行振込をご利用ください。
+				NetReaderなど、その他のブラウザについては動作確認を行っておりません。
+			</p>
         </Row>
         <Row className="p2">
             <Col xs="12" md="3">
