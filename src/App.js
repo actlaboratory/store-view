@@ -12,13 +12,12 @@ import SharedHeader from "./contents/shared/Header";
 
 function App() {
     React.useEffect(()=>{
-        let elems = document.getElementById("adspace").childNodes;
-        if(elems.length==4){
-            let elem = elems[2];
-            elem.setAttribute("aria-hidden", "true");
-            elem.setAttribute("tabindex", "-1");
+        let ad = document.body.firstChild;
+        alert("ad element count " + ad.length);
+        for(let i=0;i<ad.length;i++){
+            alert(""+i+": "+ad[i].nodeName);
         }
-    });
+    }, []);
 
     return (
         <Container style={{"max-width": "720px"}}>
