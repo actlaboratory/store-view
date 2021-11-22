@@ -9,7 +9,7 @@ const ModalDialog = (props) => {
             centered
         >
             <Modal.Body>
-                {props.message}
+                <p role="alert">{props.message}</p>
             </Modal.Body>
             {props.onClose && 
                 <Modal.Footer>
