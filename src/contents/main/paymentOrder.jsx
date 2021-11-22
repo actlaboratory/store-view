@@ -38,7 +38,7 @@ const PaymentOrder = (props) => {
             <h2>支払い情報入力</h2>
         </Row>
         <Row className="p2 mb-2">
-            <p>以下に必要事項を入力し、確定ボタンを選択してください。</p>
+            <p>以下に必要事項を入力し、確定ボタンを押してください。</p>
         </Row>
         <Row className="p2">
             <Col xs="12" md="3" className="mt-2">

@@ -64,6 +64,7 @@ const Top = (props) => {
 
 function getProductInformation(id, func){
   axios.get(settings.apiUrl + "getproduct?productid=" + id).then((r) => {
+//    return console.log(r.data);
     if   ((typeof r.data) != "object") {
       return window.location = "/error";
     }
@@ -77,6 +78,7 @@ function getProductInformation(id, func){
       });
     }
   }).catch((e) => {
+//    return console.log(e.response.data);
     window.location = "error";
   });
 }
