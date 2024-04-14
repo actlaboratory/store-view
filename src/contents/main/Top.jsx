@@ -42,7 +42,7 @@ const Top = (props) => {
   
   if (orderStep === constants.ORDER_STEP_INPUT) {
     return (
-      <InputForm productInformation={productInformation} payjpPybKey={payjpPubKey} orderFormData={orderFormData} setOrderFormData={setOrderFormData} setOrderStep={setOrderStep} />
+      <InputForm productInformation={productInformation} orderFormData={orderFormData} setOrderFormData={setOrderFormData} setOrderStep={setOrderStep} />
     );
   } else if (orderStep === constants.ORDER_STEP_CONFIRM) {
     return (
@@ -53,7 +53,7 @@ const Top = (props) => {
       setOrderStep(constants.ORDER_STEP_FINISH);
     }
     return (
-      <PaymentOrder orderFormData={orderFormData} setOrderStep={setOrderStep} setSerialnumbers={setSerialnumbers} />
+      <PaymentOrder payjpPubKey={payjpPubKey} orderFormData={orderFormData} setOrderStep={setOrderStep} setSerialnumbers={setSerialnumbers} />
     );
   } else if (orderStep === constants.ORDER_STEP_FINISH) {
     return (
@@ -86,10 +86,10 @@ function getProductInformation(id, func){
 }
 
 function getPayjpPubKey(setPayjpPubKey) {
-  axios.get(settings.apiUrl + "store/payjp_pubkey").then((r) => {
+  axios.get(settings.apiUrl + "payjp_pubkey").then((r) => {
     setPayjpPubKey(r.data);
   }).catch((E) => {
-    //window.location = "/error";
+    window.location = "/error";
   })
 }
 
