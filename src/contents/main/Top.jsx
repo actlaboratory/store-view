@@ -28,6 +28,7 @@ const Top = (props) => {
   });
   const [productInformation, setProductInformation] = useState(null);
   const [initialized, setInitialized] = useState(false);
+  const [payjpPubKey, setPayjpPubKey] = useState(null);
   const [serialnumbers, setSerialnumbers] = useState(null);
   
   // ページ初期化
@@ -35,6 +36,7 @@ const Top = (props) => {
   if ((!(isNaN(params.productid))) && (productInformation === null) && (!(initialized))){
     let productId = parseInt(params.productid);
     getProductInformation(productId, setProductInformationProc);
+    getPayjpPubKey(setPayjpPubKey);
     setInitialized(true);
   }
   
@@ -51,7 +53,7 @@ const Top = (props) => {
       setOrderStep(constants.ORDER_STEP_FINISH);
     }
     return (
-      <PaymentOrder orderFormData={orderFormData} setOrderStep={setOrderStep} setSerialnumbers={setSerialnumbers} />
+      <PaymentOrder payjpPubKey={payjpPubKey} orderFormData={orderFormData} setOrderStep={setOrderStep} setSerialnumbers={setSerialnumbers} />
     );
   } else if (orderStep === constants.ORDER_STEP_FINISH) {
     return (
@@ -82,5 +84,15 @@ function getProductInformation(id, func){
     window.location = "error";
   });
 }
+
+function getPayjpPubKey(setPayjpPubKey) {
+  axios.get(settings.apiUrl + "payjp_pubkey").then((r) => {
+    setPayjpPubKey(r.data);
+  }).catch((E) => {
+    window.location = "/error";
+  })
+}
+
+
 
 export default Top;

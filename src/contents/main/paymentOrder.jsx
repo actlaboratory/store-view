@@ -17,7 +17,7 @@ const PaymentOrder = (props) => {
         const body = document.getElementsByTagName("body")[0];
         const setupScriptElm = document.createElement('script');
         setupScriptElm.type = 'text/javascript';
-        setupScriptElm.appendChild(setupScript);
+        setupScriptElm.appendChild(createSetupScript(props.payjpPubKey));
         body.appendChild(setupScriptElm);
         window.setModal = setModal;
         window.modalClose = () => {
@@ -136,23 +136,25 @@ export default PaymentOrder;
 
 
 // constants
-const setupScript = document.createTextNode("var payjp = Payjp('"+ settings.payjpPubKey +"');"+
-    "var elements = payjp.elements();"+
-    "var cardNumberElm = elements.create('cardNumber');"+
-    "var cardExpiryElm = elements.create('cardExpiry');"+
-    "var cardCvcElm = elements.create('cardCvc');"+
-    "cardNumberElm.mount('#cardNumber');"+
-    "cardExpiryElm.mount('#cardExpiry');"+
-    "cardCvcElm.mount('#cardCvc');"+
-    "var handleSubmit = () => {"+
-    "setModal({"+
-    "show: true, message: 'カード決済中...', onClose: null"+
-    "});"+
-    "payjp.createToken(cardNumberElm).then((r)=> {"+
-    "if (r.error){setModal({"+
-    "show: true, message: r.error.message, onClose: modalClose"+
-    "});}"+
-    "else {paied(r.id);}"+
-    "});"+
-    "}"
-);
+const createSetupScript = (payjpPubKey) => {
+    return document.createTextNode("var payjp = Payjp('"+ payjpPubKey +"');"+
+        "var elements = payjp.elements();"+
+        "var cardNumberElm = elements.create('cardNumber');"+
+        "var cardExpiryElm = elements.create('cardExpiry');"+
+        "var cardCvcElm = elements.create('cardCvc');"+
+        "cardNumberElm.mount('#cardNumber');"+
+        "cardExpiryElm.mount('#cardExpiry');"+
+        "cardCvcElm.mount('#cardCvc');"+
+        "var handleSubmit = () => {"+
+        "setModal({"+
+        "show: true, message: 'カード決済中...', onClose: null"+
+        "});"+
+        "payjp.createToken(cardNumberElm).then((r)=> {"+
+        "if (r.error){setModal({"+
+        "show: true, message: r.error.message, onClose: modalClose"+
+        "});}"+
+        "else {paied(r.id);}"+
+        "});"+
+        "}"
+    );
+}
