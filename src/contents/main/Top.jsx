@@ -85,11 +85,11 @@ function getProductInformation(id, func){
   });
 }
 
-function getPayjpPubKey = (setPayjpPubKey) {
+function getPayjpPubKey(setPayjpPubKey) {
   axios.get(settings.apiUrl + "store/payjp_pubkey").then((r) => {
     setPayjpPubKey(r.data);
   }).catch((E) => {
-    window.location = "/error";
+    //window.location = "/error";
   })
 }
 
