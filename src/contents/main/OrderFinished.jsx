@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"; import "react-router-dom";
 import { Row, Col, Button } from "react-bootstrap";
 
 import constants from "../../constants";
+import settings from "../../settings";
 
 
 const OrderFinished = (props) => {
@@ -77,7 +78,7 @@ const OrderFinished = (props) => {
                 <p><label>{labelMessage}</label></p>
             </Col>
             <Col xs="12" md="9" className="mb-2">
-                <textarea rows="10" className="form-control" style={{overflow: "hidden"}} value={message} />
+                <textarea rows="10" className="form-control" style={{overflow: "scroll"}} value={message} />
             </Col>
         </Row>
         <Row className="p2 mt-2">
@@ -85,7 +86,7 @@ const OrderFinished = (props) => {
                 <p>上記内容は、なくさないように、大切に保管してください。</p>
             </Col>
             <Col xs="12" md="4" className="text-end">
-                <Button variant="success" onClick={() => {window.location.href = "https://actlab.org/"}}>内容を確認し、保存しました</Button>
+                <Button variant="success" onClick={() => {window.location.href = settings.siteUrl}}>内容を確認し、保存しました</Button>
             </Col>
         </Row>
     </>);
