@@ -117,14 +117,12 @@ const PaymentOrder = (props) => {
 }
 
 const createOrder = (cardToken, props, setModal) => {
-    //console.log(props.orderFormData);
     axios.post(settings.apiUrl + "pay", {
         orderId: props.orderFormData.orderId,
         email: props.orderFormData.email,
         cardToken: cardToken
     }).then((v) => {
         if ((typeof v.data) != "object") {
-            console.log(v);
             return;
             //return window.location = "/error";
         }
