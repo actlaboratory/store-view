@@ -12,6 +12,7 @@ const PaymentOrder = (props) => {
         message: "",
         onClick: null
     });
+    const [cardHolderName, setCardHolderName] = useState("");
 
     useEffect(() => {
         const body = document.getElementsByTagName("body")[0];
@@ -32,6 +33,10 @@ const PaymentOrder = (props) => {
         }
     }, []);
 
+    const hCardHolderName = (e) => {
+        const val = e.target.value.replace(/[^a-zA-Z0-9. -]/g, "");
+        setCardHolderName(val);
+    }
 
     return (<>
         <Row className="bg-primary text-white mb-4">
@@ -44,33 +49,46 @@ const PaymentOrder = (props) => {
             <Col xs="12" md="3" className="mt-2">
                 <p className="mb-0"><label htmlFor="cardNumber">カード番号</label></p>
             </Col>
-            <Col xs="12" md="9" className="p-2 bg-info">
-                <div id="cardNumber"></div>
+            <Col xs="12" md="9" className="p-2">
+                <div id="cardNumber" className="border border-dark"></div>
                 <p>カード番号は、16桁です。（例）0000111122223333</p>
+            </Col>
+            <Col xs="12" md="3" className="mt-2">
+                <p className="mb-0"><label htmlFor="cardHolderName">カード名義人</label></p>
+            </Col>
+            <Col xs="12" md="9" className="p-2">
+                <div>
+                    <input placeholder="カード名義人（ローマ字）" autoComplete="cc_name" id="cardHolderName" value={cardHolderName} onChange={hCardHolderName} className="border border-dark w-100"/>
+                </div>
+                <p>カードに表示されているローマ字氏名を入力します。（例）EIICHI SHIBUSAWA</p>
             </Col>
             <Col xs="12" md="3" className="mt-2">
                 <p className="mb-0"><label htmlFor="cardExpiry">有効期限</label></p>
             </Col>
-            <Col xs="12" md="9" className="p-2 bg-info">
-                <div id="cardExpiry"></div>
+            <Col xs="12" md="9" className="p-2">
+                <div id="cardExpiry" className="border border-dark"></div>
                 <p>有効期限は、月2桁、年2桁の順で入力します。（例）0322</p>
             </Col>
             <Col xs="12" md="3" className="mt-2">
                 <p className="mb-0"><label htmlFor="cardCvc">セキュリティコード (CVC)</label></p>
             </Col>
-            <Col xs="12" md="9" className="p-2 bg-info">
-                <div id="cardCvc"></div>
+            <Col xs="12" md="9" className="p-2">
+                <div id="cardCvc" className="border border-dark"></div>
                 <p>セキュリティコード（CVC）は、カード裏面の署名欄右上に記載の3桁の数字です。カードにより、記載位置が異なる場合や、4桁の場合があります。（例）555</p>
             </Col>
         </Row>
         <Row className="p-2 mt-2 bg-success">
             <Col xs="12" md="8">
                 <p className="text-white">支払い確定後、変更や払い戻しはできません。</p>
+                <p className="mb-1"><a className="text-white" href="https://actlab.org/disclose/policy" target="_blank" rel="noopener noreferrer">
+                    次へ進む前に必ずここをクリックし、新規タブでプライバシーポリシーをご一読ください。
+                </a></p>
+                <p className="text-white mt-1">ご注文を続けることにより、当ラボのプライバシーポリシーとその他の諸条件をすべて理解し、同意したことになります。</p>
             </Col>
-            <Col xs="6" md="2" className="text-end">
+            <Col xs="6" md="2" className="text-end mt-auto">
                 <Button onClick={()=>{window.location.href = "https://actlab.org/"}} variant="light">中止</Button>
             </Col>
-            <Col xs="6" md="2" className="text-end">
+            <Col xs="6" md="2" className="text-end mt-auto">
                 <Button onClick={()=>{window.handleSubmit()}} variant="light">次へ</Button>
             </Col>
         </Row>
@@ -87,11 +105,18 @@ const createOrder = (cardToken, props, setModal) => {
         cardToken: cardToken
     }).then((v) => {
         if ((typeof v.data) != "object") {
-            return window.location = "/error";
+            console.log(v);
+            return;
+            //return window.location = "/error";
         }
-        if (v.data.code === 200) {
+        if (v.data.code === 200 && v.data.type === "finished") {
             props.setSerialnumbers(v.data.serialnumbers);
             props.setOrderStep(constants.ORDER_STEP_FINISH);
+        } else if (v.data.code === 200 && v.data.type === "challenge") {
+            let paymentId = v.data.paymentId;
+            window.handleThreeDChallenge(paymentId).then((v) => {
+                createOrder(cardToken, props, setModal);
+            });
         } else{
             setModal({
                 show: true,
@@ -149,12 +174,16 @@ const createSetupScript = (payjpPubKey) => {
         "setModal({"+
         "show: true, message: 'カード決済中...', onClose: null"+
         "});"+
-        "payjp.createToken(cardNumberElm).then((r)=> {"+
+        "let ccName = document.getElementById('cardHolderName').value;"+
+        "payjp.createToken(cardNumberElm, {card: {name: ccName}}).then((r)=> {"+
         "if (r.error){setModal({"+
         "show: true, message: r.error.message, onClose: modalClose"+
         "});}"+
         "else {paied(r.id);}"+
         "});"+
+        "};"+
+        "var handleThreeDChallenge = (paymentId) => {"+
+        "return payjp.openThreeDSecureDialog(paymentId);"+
         "}"
     );
 }
