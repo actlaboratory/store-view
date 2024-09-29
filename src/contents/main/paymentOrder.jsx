@@ -45,7 +45,7 @@ const PaymentOrder = (props) => {
             });
             return;
         }
-        window.handleSubmit();
+        window.handleSubmit(props.orderFormData.email, cardHolderName);
     }
     
     const hCardHolderName = (e) => {
@@ -187,12 +187,11 @@ const createSetupScript = (payjpPubKey) => {
         "cardNumberElm.mount('#cardNumber');"+
         "cardExpiryElm.mount('#cardExpiry');"+
         "cardCvcElm.mount('#cardCvc');"+
-        "var handleSubmit = () => {"+
+        "var handleSubmit = (email, ccName) => {"+
         "setModal({"+
         "show: true, message: 'カード決済中...', onClose: null"+
         "});"+
-        "let ccName = document.getElementById('cardHolderName').value;"+
-        "payjp.createToken(cardNumberElm, {card: {name: ccName}}).then((r)=> {"+
+        "payjp.createToken(cardNumberElm, {card: {email: email, name: ccName}}).then((r)=> {"+
         "if (r.error){setModal({"+
         "show: true, message: r.error.message, onClose: modalClose"+
         "});}"+
