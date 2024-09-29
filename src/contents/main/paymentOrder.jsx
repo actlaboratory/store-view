@@ -33,8 +33,27 @@ const PaymentOrder = (props) => {
         }
     }, []);
 
+    const hSubmit = (e) => {
+        // 標準インプットチェック
+        if (cardHolderName === "") {
+            setModal({
+                show: true,
+                message: "カード名義人を入力してください。",
+                onClose: () => {
+                    window.modalClose();
+                }
+            });
+            return;
+        }
+        window.handleSubmit();
+    }
+    
     const hCardHolderName = (e) => {
         const val = e.target.value.replace(/[^a-zA-Z0-9. -]/g, "");
+        // 45文字以内
+        if (e.target.value.length > 45) {
+            return;
+        }
         setCardHolderName(val);
     }
 
@@ -89,7 +108,7 @@ const PaymentOrder = (props) => {
                 <Button onClick={()=>{window.location.href = "https://actlab.org/"}} variant="light">中止</Button>
             </Col>
             <Col xs="6" md="2" className="text-end mt-auto">
-                <Button onClick={()=>{window.handleSubmit()}} variant="light">次へ</Button>
+                <Button onClick={hSubmit} variant="light">次へ</Button>
             </Col>
         </Row>
 
