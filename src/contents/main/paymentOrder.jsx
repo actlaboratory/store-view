@@ -99,13 +99,13 @@ const PaymentOrder = (props) => {
         <Row className="p-2 mt-2 bg-success">
             <Col xs="12" md="8">
                 <p className="text-white">支払い確定後、変更や払い戻しはできません。</p>
-                <p className="mb-1"><a className="text-white" href="https://actlab.org/disclose/policy" target="_blank" rel="noopener noreferrer">
+                <p className="mb-1"><a className="text-white" href={settings.siteUrl + "disclose/policy"} target="_blank" rel="noopener noreferrer">
                     次へ進む前に必ずここをクリックし、新規タブでプライバシーポリシーをご一読ください。
                 </a></p>
                 <p className="text-white mt-1">ご注文を続けることにより、当ラボのプライバシーポリシーとその他の諸条件をすべて理解し、同意したことになります。</p>
             </Col>
             <Col xs="6" md="2" className="text-end mt-auto">
-                <Button onClick={()=>{window.location.href = "https://actlab.org/"}} variant="light">中止</Button>
+                <Button onClick={()=>{window.location.href = settings.siteUrl}} variant="light">中止</Button>
             </Col>
             <Col xs="6" md="2" className="text-end mt-auto">
                 <Button onClick={hSubmit} variant="light">次へ</Button>

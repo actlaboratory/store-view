@@ -1,4 +1,6 @@
 import { Row, Col } from "react-bootstrap";
+import settings from "../../settings"
+
 
 const Error = () => {
     return (<>
@@ -10,7 +12,7 @@ const Error = () => {
         </Row>
         <Row className="p2 mb-2">
             <Col className="12 text-end">
-                <button className="btn btn-success px-3" onClick={()=>{window.location = "https://actlab.org"}}>トップページに戻る</button>
+                <button className="btn btn-success px-3" onClick={()=>{window.location = settings.siteUrl }}>トップページに戻る</button>
             </Col>
         </Row>
     </>);

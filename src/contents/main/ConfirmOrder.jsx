@@ -132,7 +132,7 @@ const sendOrder = (formData, setMessage, setFormData, setOrderStep) => {
             setOrderStep(constants.ORDER_STEP_PAYMENT);
         } else if (r.data.reason) {
             if (r.data.reason === "confirmation faild") {
-                return window.location = "https://actlab.org/";
+                return window.location = settings.siteUrl;
             }
             setMessage(getMessage(r.data.reason));
         }
