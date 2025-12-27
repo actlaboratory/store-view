@@ -81,6 +81,12 @@ const OrderFinished = (props) => {
             <Col xs="6" md="3" className="mb-2">
                 <p>{props.orderFormData.quantity}</p>
             </Col>
+            <Col xs="6" md="3">
+                <p><label>金額</label></p>
+            </Col>
+            <Col xs="6" md="3" className="mb-2">
+                <p>{price }円</p>
+            </Col>
             {props.orderFormData.isCouponApplied && (
                 <>
                     <Col xs="12" md="3">
@@ -97,12 +103,6 @@ const OrderFinished = (props) => {
                     </Col>
                 </>
             )}
-            <Col xs="6" md="3">
-                <p><label>金額</label></p>
-            </Col>
-            <Col xs="6" md="3" className="mb-2">
-                <p>{price }円</p>
-            </Col>
             <Col xs="12" md="3">
                 <p><label>{labelMessage}</label></p>
             </Col>
