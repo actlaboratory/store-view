@@ -26,14 +26,6 @@ const OrderFinished = (props) => {
     } else if (props.orderFormData.paymentType === "free") {
         topMessage = "ご注文ありがとうございました。無料アップグレード対象のため、決済は発生しませんでした。シリアル番号を発行いたしましたので、ご確認の上、大切に保管してください。シリアル番号はメールでもお送りしていますが、この画面を閉じる前にメールの到着を確認してください。";
         labelMessage = "シリアル番号一覧";
-
-        if (props.orderResponseData && props.orderResponseData.serialnumbers) {
-            message = "* " + props.orderResponseData.serialnumbers.join("\n* ");
-        } else if (props.serialnumbers) {
-            message = "* " + props.serialnumbers.join("\n* ");
-        } else {
-            message = "シリアル番号の取得に失敗しました。メールをご確認ください。";
-        }
     }
     let price = props.orderFormData.quantity * props.productInformation.price;
 
