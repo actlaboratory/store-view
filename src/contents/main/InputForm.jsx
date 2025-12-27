@@ -111,7 +111,7 @@ const InputForm = (props) => {
             </Col>
             <Col xs="6" md="9" className="pb-2 mb-2">
                 <Col md="3">
-                    <select id="orderForm-quantity" name="quantity" value={formData.quantity} onChange={handleChange} className="form-control">{quantityCombo}</select>
+                    <select name="quantity" value={formData.quantity} onChange={handleChange} className="form-control">{quantityCombo}</select>
                 </Col>
             </Col>
             <Col xs="6" md="3">
@@ -119,7 +119,7 @@ const InputForm = (props) => {
             </Col>
             <Col xs="6" md="9" className="pb-2 mb-2">
                 <Col md="5">
-                    <select id="orderForm-paymentType" name="paymentType" value={formData.paymentType} onChange={handleChange} className="form-control">{paymentTypeCombo}</select>
+                    <select name="paymentType" value={formData.paymentType} onChange={handleChange} className="form-control">{paymentTypeCombo}</select>
                 </Col>
             </Col>
         </Row>
