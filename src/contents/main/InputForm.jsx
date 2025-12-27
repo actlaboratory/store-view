@@ -243,7 +243,7 @@ const InputForm = (props) => {
                     <p className="text-muted mt-1">クーポンは1個購入時のみ利用できます。</p>
                 )}
                 {couponMessage && (
-                    <p className={formData.isCouponApplied ? "text-success mt-1" : "text-danger mt-1"}>
+                    <p role="alert" className={formData.isCouponApplied ? "text-success mt-1" : "text-danger mt-1"}>
                         {couponMessage}
                     </p>
                 )}
