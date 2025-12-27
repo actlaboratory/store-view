@@ -1,6 +1,3 @@
-import 'react-app-polyfill/ie11';
-import 'react-app-polyfill/stable';
-
 const constants = {
     ORDER_STEP_NONE: 0,
     ORDER_STEP_INPUT: 1,

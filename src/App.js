@@ -1,6 +1,4 @@
 import React from "react";
-import "react-app-polyfill/ie11";
-import "react-app-polyfill/stable";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import { Container } from "react-bootstrap";
@@ -22,7 +20,7 @@ function App() {
     }
   }, []);
   return (
-    <Container style={{ "max-width": "720px" }}>
+    <Container style={{ maxWidth: "720px" }}>
       <SharedHeader />
       <BrowserRouter>
         <Switch>
