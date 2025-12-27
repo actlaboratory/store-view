@@ -24,12 +24,16 @@ const Top = (props) => {
     email: "",
     quantity: 1,
     paymentType: "credit",
-    orderId: 0
+    orderId: 0,
+    couponCode: "",
+    discountAmount: 0,
+    isCouponApplied: false
   });
   const [productInformation, setProductInformation] = useState(null);
   const [initialized, setInitialized] = useState(false);
   const [payjpPubKey, setPayjpPubKey] = useState(null);
   const [serialnumbers, setSerialnumbers] = useState(null);
+  const [orderResponseData, setOrderResponseData] = useState(null);
   
   // ページ初期化
   const params = queryString.parse(props.location.search);
@@ -46,10 +50,10 @@ const Top = (props) => {
     );
   } else if (orderStep === constants.ORDER_STEP_CONFIRM) {
     return (
-      <ConfirmOrder productInformation={productInformation} orderFormData={orderFormData} setOrderFormData={setOrderFormData} setOrderStep={setOrderStep} />
+      <ConfirmOrder productInformation={productInformation} orderFormData={orderFormData} setOrderFormData={setOrderFormData} setOrderStep={setOrderStep} setSerialnumbers={setSerialnumbers} setOrderResponseData={setOrderResponseData} />
     );
   } else if (orderStep === constants.ORDER_STEP_PAYMENT) {
-    if (orderFormData.paymentType === "transfer") {
+    if (orderFormData.paymentType === "transfer" || orderFormData.paymentType === "free") {
       setOrderStep(constants.ORDER_STEP_FINISH);
     }
     return (
@@ -57,7 +61,7 @@ const Top = (props) => {
     );
   } else if (orderStep === constants.ORDER_STEP_FINISH) {
     return (
-      <OrderFinished productInformation={productInformation} orderFormData={orderFormData} setOrderStep={setOrderStep} serialnumbers={serialnumbers} />
+      <OrderFinished productInformation={productInformation} orderFormData={orderFormData} setOrderStep={setOrderStep} serialnumbers={serialnumbers} orderResponseData={orderResponseData} />
     );
   }
   return (<p>読み込み中...</p>);

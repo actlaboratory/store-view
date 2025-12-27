@@ -12,14 +12,91 @@ const InputForm = (props) => {
         name: props.orderFormData.name,
         email: props.orderFormData.email,
         quantity: props.orderFormData.quantity,
-        paymentType: props.orderFormData.paymentType
+        paymentType: props.orderFormData.paymentType,
+        couponCode: props.orderFormData.couponCode,
+        discountAmount: props.orderFormData.discountAmount,
+        isCouponApplied: props.orderFormData.isCouponApplied
     });
+    const [couponInputValue, setCouponInputValue] = useState(
+        props.orderFormData.isCouponApplied ? props.orderFormData.couponCode : ""
+    );
+    const [couponMessage, setCouponMessage] = useState("");
+    const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
     const handleChange = (e) => {
         let k = e.target.name;
-        setFormData(s => ({...s, [k]: e.target.value}));
+        let newValue = e.target.value;
+
+        if (k === "quantity" && parseInt(newValue) >= 2 && formData.isCouponApplied) {
+            setFormData(s => ({
+                ...s,
+                [k]: newValue,
+                couponCode: "",
+                discountAmount: 0,
+                isCouponApplied: false
+            }));
+            setCouponInputValue("");
+            setCouponMessage("個数が2個以上のため、クーポンが無効化されました。");
+        } else {
+            setFormData(s => ({...s, [k]: newValue}));
+        }
     }
+    const handleApplyCoupon = async () => {
+        setIsApplyingCoupon(true);
+        setCouponMessage("");
+
+        try {
+            const response = await axios.post(settings.apiUrl + "coupon", {
+                product_id: props.productInformation.productId,
+                code: couponInputValue
+            });
+
+            if (response.data.code === 200) {
+                setFormData(s => ({
+                    ...s,
+                    couponCode: couponInputValue,
+                    discountAmount: response.data.discountAmount,
+                    isCouponApplied: true
+                }));
+                setCouponMessage("クーポンが適用されました。割引額: " + response.data.discountAmount + "円");
+            } else {
+                setCouponMessage(response.data.reason || "クーポンコードが無効です。");
+            }
+        } catch (e) {
+            setCouponMessage("エラーが発生しました。時間をおいて再度お試しください。");
+        } finally {
+            setIsApplyingCoupon(false);
+        }
+    };
+
+    const handleRemoveCoupon = () => {
+        setFormData(s => ({
+            ...s,
+            couponCode: "",
+            discountAmount: 0,
+            isCouponApplied: false
+        }));
+        setCouponInputValue("");
+        setCouponMessage("");
+    };
+
     const handleSubmit = () => {
-        props.setOrderFormData({...formData, productId: props.productInformation.productId, quantity: parseInt(formData.quantity)});
+        // 金額計算
+        let totalPriceBeforeTax = props.productInformation.price * formData.quantity;
+        let discountedPrice = totalPriceBeforeTax - formData.discountAmount;
+        if (discountedPrice < 0) discountedPrice = 0;
+        let fee = 0;
+        if (formData.paymentType === "transfer") {
+            fee = constants.TRANSFER_FEE;
+        }
+        let finalPrice = parseInt((discountedPrice + fee) * (1 + constants.TAX_RATE));
+        let isFreeOrder = finalPrice === 0;
+
+        let submitData = {...formData, productId: props.productInformation.productId, quantity: parseInt(formData.quantity)};
+        if (isFreeOrder) {
+            submitData.paymentType = "free";
+        }
+
+        props.setOrderFormData(submitData);
         axios.post(settings.apiUrl + "setemail", {"email": formData.email}).then((r)=> {
             // return console.log(r.data);
             if   ((typeof r.data) != "object") {
@@ -42,6 +119,17 @@ const InputForm = (props) => {
         message = "次の画面で、あなたのメールアドレスと注文内容を確認します。";
         nextButton = true;
     }
+
+    // 金額計算
+    let totalPriceBeforeTax = props.productInformation.price * formData.quantity;
+    let discountedPrice = totalPriceBeforeTax - formData.discountAmount;
+    if (discountedPrice < 0) discountedPrice = 0;
+    let fee = 0;
+    if (formData.paymentType === "transfer") {
+        fee = constants.TRANSFER_FEE;
+    }
+    let finalPrice = parseInt((discountedPrice + fee) * (1 + constants.TAX_RATE));
+    let isFreeOrder = finalPrice === 0;
 
     let paymentTypeCombo = [];
     for (const [k,v] of Object.entries(constants.PAYMENT_TYPE_JAPANESE)) {
@@ -114,14 +202,89 @@ const InputForm = (props) => {
                     <select name="quantity" value={formData.quantity} onChange={handleChange} className="form-control">{quantityCombo}</select>
                 </Col>
             </Col>
-            <Col xs="6" md="3">
-                <p><label htmlFor="orderForm-paymentType">支払い方法</label></p>
+            <Col xs="12" md="3">
+                <p><label htmlFor="orderForm-couponCode">クーポンコード（任意）</label></p>
             </Col>
-            <Col xs="6" md="9" className="pb-2 mb-2">
-                <Col md="5">
-                    <select name="paymentType" value={formData.paymentType} onChange={handleChange} className="form-control">{paymentTypeCombo}</select>
-                </Col>
+            <Col xs="12" md="9" className="pb-2 mb-2">
+                <Row>
+                    <Col xs="8" md="6">
+                        <input
+                            name="couponCode"
+                            value={couponInputValue}
+                            onChange={(e) => setCouponInputValue(e.target.value)}
+                            className="form-control"
+                            id="orderForm-couponCode"
+                            type="text"
+                            disabled={formData.quantity >= 2 || formData.isCouponApplied}
+                            placeholder="クーポンコード"
+                        />
+                    </Col>
+                    <Col xs="4" md="3">
+                        {formData.isCouponApplied ? (
+                            <Button
+                                onClick={handleRemoveCoupon}
+                                variant="danger"
+                                disabled={isApplyingCoupon}
+                            >
+                                削除
+                            </Button>
+                        ) : (
+                            <Button
+                                onClick={handleApplyCoupon}
+                                variant="primary"
+                                disabled={couponInputValue === "" || formData.quantity >= 2 || isApplyingCoupon}
+                            >
+                                適用
+                            </Button>
+                        )}
+                    </Col>
+                </Row>
+                {formData.quantity >= 2 && (
+                    <p className="text-muted mt-1">クーポンは1個購入時のみ利用できます。</p>
+                )}
+                {couponMessage && (
+                    <p className={formData.isCouponApplied ? "text-success mt-1" : "text-danger mt-1"}>
+                        {couponMessage}
+                    </p>
+                )}
             </Col>
+            {formData.isCouponApplied && (
+                <>
+                    <Col xs="12" md="3">
+                        <p><label>割引額</label></p>
+                    </Col>
+                    <Col xs="12" md="9" className="mb-2">
+                        <p className="text-success">-{formData.discountAmount.toLocaleString()} 円</p>
+                    </Col>
+                </>
+            )}
+            <Col xs="12" md="3">
+                <p><label>合計金額（税込）</label></p>
+            </Col>
+            <Col xs="12" md="9" className="mb-2">
+                <p>{finalPrice.toLocaleString()} 円</p>
+            </Col>
+            {isFreeOrder ? (
+                <>
+                    <Col xs="12" md="3">
+                        <p><label>支払い方法</label></p>
+                    </Col>
+                    <Col xs="12" md="9" className="pb-2 mb-2">
+                        <p>お支払いは不要です</p>
+                    </Col>
+                </>
+            ) : (
+                <>
+                    <Col xs="6" md="3">
+                        <p><label htmlFor="orderForm-paymentType">支払い方法</label></p>
+                    </Col>
+                    <Col xs="6" md="9" className="pb-2 mb-2">
+                        <Col md="5">
+                            <select name="paymentType" value={formData.paymentType} onChange={handleChange} className="form-control">{paymentTypeCombo}</select>
+                        </Col>
+                    </Col>
+                </>
+            )}
         </Row>
         <Row className="p2 mt-2">
             <Col xs="12" md="8">
