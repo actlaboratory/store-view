@@ -32,11 +32,15 @@ jobs:
         id: commit
         run: echo "hash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
 
-      - name: Clone site repository
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_ACTLAB_AUTO_PERSONAL_ACCESS_TOKEN }}
+      - name: Checkout site repository
+        uses: actions/checkout@v6
+        with:
+          repository: actlaboratory/site
+          path: site-repo
+          token: ${{ secrets.GITHUB_ACTLAB_AUTO_PERSONAL_ACCESS_TOKEN }}
+
+      - name: Configure git for site repository
         run: |
-          git clone https://${GITHUB_TOKEN}@github.com/actlaboratory/site.git site-repo
           cd site-repo
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
