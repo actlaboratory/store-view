@@ -1,0 +1,88 @@
+name: Deploy to Site
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout store-view
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build project
+        run: pnpm build
+
+      - name: Get current commit hash
+        id: commit
+        run: echo "hash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Clone site repository
+        env:
+          GITHUB_TOKEN: ${{ secrets.SITE_DEPLOY_TOKEN }}
+        run: |
+          git clone https://${GITHUB_TOKEN}@github.com/actlaboratory/site.git site-repo
+          cd site-repo
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Deploy files
+        run: |
+          # Move index.html to app/view/store/
+          mkdir -p site-repo/app/view/store
+          mv dist/index.html site-repo/app/view/store/index.html
+
+          # Delete existing public/static directory
+          rm -rf site-repo/public/static
+
+          # Move dist/static to public/store/static
+          mkdir -p site-repo/public/store
+          mv dist/static site-repo/public/store/static
+
+          # Move remaining dist files to public/store
+          find dist -maxdepth 1 -type f -exec mv {} site-repo/public/store/ \;
+
+      - name: Create branch and commit
+        run: |
+          cd site-repo
+          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+          BRANCH_NAME="store-update-${TIMESTAMP}"
+          git checkout -b "${BRANCH_NAME}"
+          git add .
+          git commit -m "store更新"
+          echo "branch=${BRANCH_NAME}" >> $GITHUB_OUTPUT
+        id: branch
+
+      - name: Push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.SITE_DEPLOY_TOKEN }}
+        run: |
+          cd site-repo
+          git push https://${GITHUB_TOKEN}@github.com/actlaboratory/site.git "${{ steps.branch.outputs.branch }}"
+
+      - name: Create Pull Request
+        env:
+          GH_TOKEN: ${{ secrets.SITE_DEPLOY_TOKEN }}
+        run: |
+          cd site-repo
+          gh pr create \
+            --repo actlaboratory/site \
+            --title "store更新" \
+            --body "store-view commit: ${{ steps.commit.outputs.hash }}" \
+            --head "${{ steps.branch.outputs.branch }}" \
+            --base master
