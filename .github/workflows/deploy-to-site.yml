@@ -37,7 +37,7 @@ jobs:
         with:
           repository: actlaboratory/site
           path: site-repo
-          token: ${{ secrets.GITHUB_ACTLAB_AUTO_PERSONAL_ACCESS_TOKEN }}
+          token: ${{ secrets.ACTLAB_AUTO_GITHUB_PERSONAL_ACCESS_TOKEN }}
 
       - name: Configure git for site repository
         run: |
@@ -74,14 +74,14 @@ jobs:
 
       - name: Push changes
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_ACTLAB_AUTO_PERSONAL_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ACTLAB_AUTO_GITHUB_PERSONAL_ACCESS_TOKEN }}
         run: |
           cd site-repo
           git push https://${GITHUB_TOKEN}@github.com/actlaboratory/site.git "${{ steps.branch.outputs.branch }}"
 
       - name: Create Pull Request
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_ACTLAB_AUTO_PERSONAL_ACCESS_TOKEN }}
+          GH_TOKEN: ${{ secrets.ACTLAB_AUTO_GITHUB_PERSONAL_ACCESS_TOKEN }}
         run: |
           cd site-repo
           gh pr create \
