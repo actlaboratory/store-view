@@ -26,7 +26,7 @@ const ConfirmOrder = (props) => {
     }
     const handleSubmit = () => {
         let data = {...props.orderFormData, ...formData};
-        sendOrder(data, setMessage, props.setOrderFormData, props.setOrderStep, props.setSerialnumbers, props.setOrderResponseData);
+        sendOrder(data, setMessage, props.setOrderFormData, props.setOrderStep, props.setSerialnumbers);
     }
 
     let totalPrice = props.productInformation.price * props.orderFormData.quantity;
@@ -146,7 +146,7 @@ const setOrder = (data) => {
     return "認証コードが誤っています。"
 }
 
-const sendOrder = (formData, setMessage, setFormData, setOrderStep, setSerialnumbers, setOrderResponseData) => {
+const sendOrder = (formData, setMessage, setFormData, setOrderStep, setSerialnumbers) => {
     let requestData = {...formData};
     if (formData.isCouponApplied) {
         requestData.couponCode = formData.couponCode;
@@ -159,7 +159,6 @@ const sendOrder = (formData, setMessage, setFormData, setOrderStep, setSerialnum
 
         if (r.data.code === 200 && r.data.type === "finished") {
             setFormData(s => ({...s, orderId: r.data.orderId}));
-            setOrderResponseData(r.data);
             if (r.data.serialnumbers) {
                 setSerialnumbers(r.data.serialnumbers);
             }
