@@ -7,7 +7,6 @@ import constants from "../../constants";
 
 
 const InputForm = (props) => {
-    
     const [formData, setFormData] = useState({
         name: props.orderFormData.name,
         email: props.orderFormData.email,
@@ -79,7 +78,7 @@ const InputForm = (props) => {
         setCouponMessage("");
     };
 
-    const handleSubmit = () => {
+    const calcFinalPrice = () => {
         // 金額計算
         let totalPriceBeforeTax = props.productInformation.price * formData.quantity;
         let discountedPrice = totalPriceBeforeTax - formData.discountAmount;
@@ -89,6 +88,11 @@ const InputForm = (props) => {
             fee = constants.TRANSFER_FEE;
         }
         let finalPrice = parseInt((discountedPrice + fee) * (1 + constants.TAX_RATE));
+        return finalPrice
+    };
+
+    const handleSubmit = () => {
+        let finalPrice = calcFinalPrice();
         let isFreeOrder = finalPrice === 0;
 
         let submitData = {...formData, productId: props.productInformation.productId, quantity: parseInt(formData.quantity)};
@@ -98,7 +102,6 @@ const InputForm = (props) => {
 
         props.setOrderFormData(submitData);
         axios.post(settings.apiUrl + "setemail", {"email": formData.email}).then((r)=> {
-            // return console.log(r.data);
             if   ((typeof r.data) != "object") {
                 return window.location = "/error";
             }
@@ -120,16 +123,8 @@ const InputForm = (props) => {
         nextButton = true;
     }
 
-    // 金額計算
-    let totalPriceBeforeTax = props.productInformation.price * formData.quantity;
-    let discountedPrice = totalPriceBeforeTax - formData.discountAmount;
-    if (discountedPrice < 0) discountedPrice = 0;
-    let fee = 0;
-    if (formData.paymentType === "transfer") {
-        fee = constants.TRANSFER_FEE;
-    }
-    let finalPrice = parseInt((discountedPrice + fee) * (1 + constants.TAX_RATE));
-    let isFreeOrder = finalPrice === 0;
+    const finalPrice = calcFinalPrice();
+    const isFreeOrder = finalPrice === 0;
 
     let paymentTypeCombo = [];
     for (const [k,v] of Object.entries(constants.PAYMENT_TYPE_JAPANESE)) {
