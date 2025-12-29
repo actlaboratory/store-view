@@ -23,11 +23,25 @@ const OrderFinished = (props) => {
             + "\n口座名義: " + constants.BANK_ACCOUNT_OWNER
             + "\n* 振込人名には、注文番号と、先ほどご入力されたお名前を指定してください。（例：　13 ヤマダタロウ）"
             + "\n* 上記金額を、振込手数料お客様負担にてお支払いください。";
+    } else if (props.orderFormData.paymentType === "free") {
+        topMessage = "ご注文ありがとうございました。無料アップグレード対象のため、決済は発生しませんでした。シリアル番号を発行いたしましたので、ご確認の上、大切に保管してください。シリアル番号はメールでもお送りしていますが、この画面を閉じる前にメールの到着を確認してください。";
+        labelMessage = "シリアル番号一覧";
+        message = "* " + props.serialnumbers.join("\n* ");
     }
-    let price = parseInt(props.orderFormData.quantity * props.productInformation.price * (1 + constants.TAX_RATE));
+    let price = props.orderFormData.quantity * props.productInformation.price;
+
+    // 割引適用
+    if (props.orderFormData.isCouponApplied) {
+        price = price - props.orderFormData.discountAmount;
+        if (price < 0) price = 0;
+    }
+
+    price = parseInt(price * (1 + constants.TAX_RATE));
+
     if (props.orderFormData.paymentType === "transfer") {
         price = price + constants.TRANSFER_FEE * (1 + constants.TAX_RATE);
     }
+
     price = price.toLocaleString();
 
     return (<>
@@ -74,6 +88,22 @@ const OrderFinished = (props) => {
             <Col xs="6" md="3" className="mb-2">
                 <p>{price }円</p>
             </Col>
+            {props.orderFormData.isCouponApplied && (
+                <>
+                    <Col xs="12" md="3">
+                        <p><label>適用クーポン</label></p>
+                    </Col>
+                    <Col xs="12" md="9" className="mb-2">
+                        <p>{props.orderFormData.couponCode}</p>
+                    </Col>
+                    <Col xs="12" md="3">
+                        <p><label>割引額</label></p>
+                    </Col>
+                    <Col xs="12" md="9" className="mb-2">
+                        <p className="text-success">-{props.orderFormData.discountAmount.toLocaleString()} 円</p>
+                    </Col>
+                </>
+            )}
             <Col xs="12" md="3">
                 <p><label>{labelMessage}</label></p>
             </Col>

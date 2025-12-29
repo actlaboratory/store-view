@@ -24,7 +24,10 @@ const Top = (props) => {
     email: "",
     quantity: 1,
     paymentType: "credit",
-    orderId: 0
+    orderId: 0,
+    couponCode: "",
+    discountAmount: 0,
+    isCouponApplied: false
   });
   const [productInformation, setProductInformation] = useState(null);
   const [initialized, setInitialized] = useState(false);
@@ -46,10 +49,10 @@ const Top = (props) => {
     );
   } else if (orderStep === constants.ORDER_STEP_CONFIRM) {
     return (
-      <ConfirmOrder productInformation={productInformation} orderFormData={orderFormData} setOrderFormData={setOrderFormData} setOrderStep={setOrderStep} />
+      <ConfirmOrder productInformation={productInformation} orderFormData={orderFormData} setOrderFormData={setOrderFormData} setOrderStep={setOrderStep} setSerialnumbers={setSerialnumbers} />
     );
   } else if (orderStep === constants.ORDER_STEP_PAYMENT) {
-    if (orderFormData.paymentType === "transfer") {
+    if (orderFormData.paymentType === "transfer" || orderFormData.paymentType === "free") {
       setOrderStep(constants.ORDER_STEP_FINISH);
     }
     return (

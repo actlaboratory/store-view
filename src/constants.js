@@ -6,7 +6,8 @@ const constants = {
     ORDER_STEP_FINISH: 4,
     PAYMENT_TYPE_JAPANESE: {
         credit: "クレジットカード決済",
-        transfer: "銀行振込"
+        transfer: "銀行振込",
+        free: "無料（クーポン適用）"
     },
     TAX_RATE: 0.1,
     BANK_NAME: "三菱UFJ銀行",

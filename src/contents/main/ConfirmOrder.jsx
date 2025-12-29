@@ -26,10 +26,18 @@ const ConfirmOrder = (props) => {
     }
     const handleSubmit = () => {
         let data = {...props.orderFormData, ...formData};
-        sendOrder(data, setMessage, props.setOrderFormData, props.setOrderStep);
+        sendOrder(data, setMessage, props.setOrderFormData, props.setOrderStep, props.setSerialnumbers);
     }
 
     let totalPrice = props.productInformation.price * props.orderFormData.quantity;
+
+    // 割引適用
+    if (props.orderFormData.isCouponApplied) {
+        totalPrice = totalPrice - props.orderFormData.discountAmount;
+        if (totalPrice < 0) totalPrice = 0;
+    }
+
+    // 振込手数料
     if (props.orderFormData.paymentType === "transfer") {
         totalPrice = totalPrice + constants.TRANSFER_FEE;
     }
@@ -84,6 +92,22 @@ const ConfirmOrder = (props) => {
             <Col xs="12" md="9" className="mb-2">
                 <p>{props.orderFormData.quantity} 個</p>
             </Col>
+            {props.orderFormData.isCouponApplied && (
+                <>
+                    <Col xs="12" md="3">
+                        <p><label>適用クーポン</label></p>
+                    </Col>
+                    <Col xs="12" md="9" className="mb-2">
+                        <p>{props.orderFormData.couponCode}</p>
+                    </Col>
+                    <Col xs="12" md="3">
+                        <p><label>割引額</label></p>
+                    </Col>
+                    <Col xs="12" md="9" className="mb-2">
+                        <p className="text-success">-{props.orderFormData.discountAmount.toLocaleString()} 円</p>
+                    </Col>
+                </>
+            )}
             <Col xs="6" md="3">
                 <p><label>注文合計</label></p>
             </Col>
@@ -122,12 +146,24 @@ const setOrder = (data) => {
     return "認証コードが誤っています。"
 }
 
-const sendOrder = (formData, setMessage, setFormData, setOrderStep) => {
-    axios.post(settings.apiUrl + "order", formData).then((r) => {
+const sendOrder = (formData, setMessage, setFormData, setOrderStep, setSerialnumbers) => {
+    let requestData = {...formData};
+    if (formData.isCouponApplied) {
+        requestData.couponCode = formData.couponCode;
+    }
+
+    axios.post(settings.apiUrl + "order", requestData).then((r) => {
         if   ((typeof r.data) != "object") {
             return window.location = "/error";
         }
-        if ((r.data.code === 200) && (r.data.orderId)) {
+
+        if (r.data.code === 200 && r.data.type === "finished") {
+            setFormData(s => ({...s, orderId: r.data.orderId}));
+            if (r.data.serialnumbers) {
+                setSerialnumbers(r.data.serialnumbers);
+            }
+            setOrderStep(constants.ORDER_STEP_FINISH);
+        } else if ((r.data.code === 200) && (r.data.orderId)) {
             setFormData(s => ({...s, orderId: r.data.orderId}));
             setOrderStep(constants.ORDER_STEP_PAYMENT);
         } else if (r.data.reason) {
