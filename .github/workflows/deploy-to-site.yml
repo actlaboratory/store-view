@@ -51,8 +51,8 @@ jobs:
           mkdir -p site-repo/app/View/store
           mv build/index.html site-repo/app/View/store/index.html
 
-          # Delete existing public/static directory
-          rm -rf site-repo/public/static
+          # Delete existing public/store/static directory
+          rm -rf site-repo/public/store/static
 
           # Move build/static to public/store/static
           mkdir -p site-repo/public/store
