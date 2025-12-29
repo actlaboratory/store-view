@@ -49,17 +49,17 @@ jobs:
         run: |
           # Move index.html to app/view/store/
           mkdir -p site-repo/app/view/store
-          mv dist/index.html site-repo/app/view/store/index.html
+          mv build/index.html site-repo/app/view/store/index.html
 
           # Delete existing public/static directory
           rm -rf site-repo/public/static
 
-          # Move dist/static to public/store/static
+          # Move build/static to public/store/static
           mkdir -p site-repo/public/store
-          mv dist/static site-repo/public/store/static
+          mv build/static site-repo/public/store/static
 
-          # Move remaining dist files to public/store
-          find dist -maxdepth 1 -type f -exec mv {} site-repo/public/store/ \;
+          # Move remaining build files to public/store
+          find build -maxdepth 1 -type f -exec mv {} site-repo/public/store/ \;
 
       - name: Create branch and commit
         run: |
