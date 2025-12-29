@@ -47,9 +47,9 @@ jobs:
 
       - name: Deploy files
         run: |
-          # Move index.html to app/view/store/
-          mkdir -p site-repo/app/view/store
-          mv build/index.html site-repo/app/view/store/index.html
+          # Move index.html to app/View/store/
+          mkdir -p site-repo/app/View/store
+          mv build/index.html site-repo/app/View/store/index.html
 
           # Delete existing public/static directory
           rm -rf site-repo/public/static
