@@ -2,8 +2,8 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
 
-export default defineConfig({
-  base: './',
+export default defineConfig(({ command }) => ({
+  base: command === 'build' ? '/public/store/' : '/',
   plugins: [
     react({
       fastRefresh: true,
@@ -81,4 +81,4 @@ export default defineConfig({
     include: /src\/.*\.jsx?$/,
     exclude: [],
   },
-});
+}));
