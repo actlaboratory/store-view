@@ -26,12 +26,17 @@ const InputForm = (props) => {
         let newValue = e.target.value;
 
         if (k === "quantity" && parseInt(newValue) >= 2 && formData.isCouponApplied) {
+            // クーポン無効化前に請求額をチェック
+            let currentFinalPrice = calcFinalPrice();
+            let shouldResetPaymentType = currentFinalPrice === 0;
+
             setFormData(s => ({
                 ...s,
                 [k]: newValue,
                 couponCode: "",
                 discountAmount: 0,
-                isCouponApplied: false
+                isCouponApplied: false,
+                paymentType: shouldResetPaymentType ? "credit" : s.paymentType
             }));
             setCouponInputValue("");
             setCouponMessage("個数が2個以上のため、クーポンが無効化されました。");
@@ -68,11 +73,16 @@ const InputForm = (props) => {
     };
 
     const handleRemoveCoupon = () => {
+        // クーポン無効化前に請求額をチェック
+        let currentFinalPrice = calcFinalPrice();
+        let shouldResetPaymentType = currentFinalPrice === 0;
+
         setFormData(s => ({
             ...s,
             couponCode: "",
             discountAmount: 0,
-            isCouponApplied: false
+            isCouponApplied: false,
+            paymentType: shouldResetPaymentType ? "credit" : s.paymentType
         }));
         setCouponInputValue("");
         setCouponMessage("");
