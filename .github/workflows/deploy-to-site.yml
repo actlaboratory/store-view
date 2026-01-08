@@ -2,6 +2,12 @@ name: Deploy to Site
 
 on:
   workflow_dispatch:
+    inputs:
+      base_branch:
+        description: 'Base branch for site repository'
+        required: false
+        default: 'master'
+        type: string
 
 jobs:
   deploy:
@@ -36,6 +42,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           repository: actlaboratory/site
+          ref: ${{ inputs.base_branch }}
           path: site-repo
           token: ${{ secrets.ACTLAB_AUTO_GITHUB_PERSONAL_ACCESS_TOKEN }}
 
@@ -89,4 +96,4 @@ jobs:
             --title "store更新" \
             --body "store-view commit: ${{ steps.commit.outputs.hash }}" \
             --head "${{ steps.branch.outputs.branch }}" \
-            --base master
+            --base "${{ inputs.base_branch }}"
