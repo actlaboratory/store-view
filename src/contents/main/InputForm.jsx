@@ -84,7 +84,8 @@ const InputForm = (props) => {
         let discountedPrice = totalPriceBeforeTax - formData.discountAmount;
         if (discountedPrice < 0) discountedPrice = 0;
         let fee = 0;
-        if (formData.paymentType === "transfer") {
+        // 割引後の金額が0円の場合は振込手数料を加算しない
+        if (discountedPrice > 0 && formData.paymentType === "transfer") {
             fee = constants.TRANSFER_FEE;
         }
         let finalPrice = parseInt((discountedPrice + fee) * (1 + constants.TAX_RATE));
