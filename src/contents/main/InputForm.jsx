@@ -358,9 +358,7 @@ const InputForm = (props) => {
                         <p><label htmlFor="orderForm-paymentType">支払い方法</label></p>
                     </Col>
                     <Col xs="6" md="9" className="pb-2 mb-2">
-                        <Col md="5">
-                            <select id="orderForm-paymentType" name="paymentType" value={formData.paymentType} onChange={handleChange} className="form-control">{paymentTypeCombo}</select>
-                        </Col>
+                        <select id="orderForm-paymentType" name="paymentType" value={formData.paymentType} onChange={handleChange} className="form-control">{paymentTypeCombo}</select>
                     </Col>
                 </>
             )}
