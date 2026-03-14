@@ -65,6 +65,11 @@ const OrderFinished = (props) => {
             <p role="alert">{topMessage}</p>
         </Row>
         <Row className="p2">
+            {isGradeUp && props.orderFormData.paymentType !== "transfer" && (
+                <Col xs="12" className="mb-2">
+                    <p>追加した機能は、最初に入力いただいたシリアルキーに紐づけられています。お使いのソフトウェアのマニュアルに従い、再度認証を行ってください。</p>
+                </Col>
+            )}
             <Col xs="12" md="3">
                 <p><label>注文番号</label></p>
             </Col>
