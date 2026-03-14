@@ -27,7 +27,9 @@ const Top = (props) => {
     orderId: 0,
     couponCode: "",
     discountAmount: 0,
-    isCouponApplied: false
+    isCouponApplied: false,
+    serialNumber: "",
+    isSnValidated: false
   });
   const [productInformation, setProductInformation] = useState(null);
   const [initialized, setInitialized] = useState(false);
@@ -79,7 +81,8 @@ function getProductInformation(id, func){
         name: r.data.software.name,
         edition: r.data.software.edition,
         discription: r.data.software.discription,
-        price: r.data.software.price
+        price: r.data.software.price,
+        require_sn_prefix: r.data.software.require_sn_prefix ?? null
       });
     }
   }).catch((e) => {

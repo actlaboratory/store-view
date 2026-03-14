@@ -4,6 +4,7 @@ import { Row, Col, Button } from "react-bootstrap";
 
 import settings from "../../settings";
 import constants from "../../constants";
+import ModalDialog from "./ModalDialog";
 
 
 const InputForm = (props) => {
@@ -14,13 +15,18 @@ const InputForm = (props) => {
         paymentType: props.orderFormData.paymentType,
         couponCode: props.orderFormData.couponCode,
         discountAmount: props.orderFormData.discountAmount,
-        isCouponApplied: props.orderFormData.isCouponApplied
+        isCouponApplied: props.orderFormData.isCouponApplied,
+        serialNumber: props.orderFormData.serialNumber,
+        isSnValidated: props.orderFormData.isSnValidated
     });
     const [couponInputValue, setCouponInputValue] = useState(
         props.orderFormData.isCouponApplied ? props.orderFormData.couponCode : ""
     );
     const [couponMessage, setCouponMessage] = useState("");
     const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
+    const [isApplyingSn, setIsApplyingSn] = useState(false);
+    const [snDialogMessage, setSnDialogMessage] = useState("");
+    const [showSnDialog, setShowSnDialog] = useState(false);
     const handleChange = (e) => {
         let k = e.target.name;
         let newValue = e.target.value;
@@ -69,6 +75,32 @@ const InputForm = (props) => {
             setCouponMessage("エラーが発生しました。時間をおいて再度お試しください。");
         } finally {
             setIsApplyingCoupon(false);
+        }
+    };
+
+    const handleSnValidate = async () => {
+        setIsApplyingSn(true);
+        try {
+            const response = await axios.post(settings.apiUrl + "grade_up_validate", {
+                product_id: props.productInformation.productId,
+                serial_number: formData.serialNumber
+            });
+            if (response.data.code === 200 && response.data.result === "") {
+                setFormData(s => ({...s, isSnValidated: true}));
+                setSnDialogMessage("入力内容が確認されました。");
+                setShowSnDialog(true);
+            } else if (response.data.code === 200) {
+                setSnDialogMessage(response.data.result);
+                setShowSnDialog(true);
+            } else {
+                setSnDialogMessage(response.data.reason || "エラーが発生しました。時間をおいて再度お試しください。");
+                setShowSnDialog(true);
+            }
+        } catch (e) {
+            setSnDialogMessage("エラーが発生しました。時間をおいて再度お試しください。");
+            setShowSnDialog(true);
+        } finally {
+            setIsApplyingSn(false);
         }
     };
 
@@ -127,7 +159,7 @@ const InputForm = (props) => {
         });
     }
 
-    let message = validateForm(formData);
+    let message = validateForm(formData, props.productInformation.require_sn_prefix);
     let nextButton = false;
     if (message === "") {
         message = "次の画面で、あなたのメールアドレスと注文内容を確認します。";
@@ -155,6 +187,11 @@ const InputForm = (props) => {
     }
     
     return (<>
+        <ModalDialog
+            show={showSnDialog}
+            message={snDialogMessage}
+            onClose={() => setShowSnDialog(false)}
+        />
         <Row className="bg-primary text-white mb-4">
             <h2>注文情報入力</h2>
         </Row>
@@ -202,12 +239,46 @@ const InputForm = (props) => {
             <Col xs="12" md="9" className="pb-2 mb-2">
                 <input name="email" value={formData.email} onChange={handleChange} className="form-control" id="orderForm-email" type="text"/>
             </Col>
+            {props.productInformation.require_sn_prefix && (<>
+            <Col xs="12" md="3">
+                <p><label htmlFor="orderForm-serialNumber">シリアルキー</label></p>
+            </Col>
+            <Col xs="12" md="9" className="pb-2 mb-2">
+                <Row>
+                    <Col xs="8" md="6">
+                        <input
+                            name="serialNumber"
+                            value={formData.serialNumber}
+                            onChange={handleChange}
+                            className="form-control"
+                            id="orderForm-serialNumber"
+                            type="text"
+                            maxLength={19}
+                            disabled={formData.isSnValidated}
+                            placeholder={props.productInformation.require_sn_prefix + "ではじまるシリアルキーを入力"}
+                        />
+                    </Col>
+                    <Col xs="4" md="3">
+                        <Button
+                            onClick={handleSnValidate}
+                            variant="primary"
+                            disabled={formData.serialNumber === "" || formData.isSnValidated || isApplyingSn}
+                        >
+                            確認
+                        </Button>
+                    </Col>
+                </Row>
+                {formData.isSnValidated && (
+                    <p className="text-success mt-1">入力内容が確認されました。</p>
+                )}
+            </Col>
+            </>)}
             <Col xs="6" md="3">
                 <p><label htmlFor="orderForm-quantity">購入個数</label></p>
             </Col>
             <Col xs="6" md="9" className="pb-2 mb-2">
                 <Col md="3">
-                    <select id="orderForm-quantity" name="quantity" value={formData.quantity} onChange={handleChange} className="form-control">{quantityCombo}</select>
+                    <select id="orderForm-quantity" name="quantity" value={formData.quantity} onChange={handleChange} className="form-control" disabled={!!props.productInformation.require_sn_prefix}>{quantityCombo}</select>
                 </Col>
             </Col>
             <Col xs="12" md="3">
@@ -287,9 +358,7 @@ const InputForm = (props) => {
                         <p><label htmlFor="orderForm-paymentType">支払い方法</label></p>
                     </Col>
                     <Col xs="6" md="9" className="pb-2 mb-2">
-                        <Col md="5">
-                            <select id="orderForm-paymentType" name="paymentType" value={formData.paymentType} onChange={handleChange} className="form-control">{paymentTypeCombo}</select>
-                        </Col>
+                        <select id="orderForm-paymentType" name="paymentType" value={formData.paymentType} onChange={handleChange} className="form-control">{paymentTypeCombo}</select>
                     </Col>
                 </>
             )}
@@ -305,7 +374,7 @@ const InputForm = (props) => {
     </>);
 }
 
-const validateForm = (data) => {
+const validateForm = (data, requireSnPrefix) => {
     let errMessages = [];
     if (data.name.length < 2) {
         errMessages.push("・お名前を、２文字以上で入力してください。");
@@ -316,7 +385,10 @@ const validateForm = (data) => {
     if ((isNaN(data.quantity)) || (parseInt(data.quantity) <= 0) || (parseInt(data.quantity) > 10)) {
         errMessages.push("・購入個数は、１～10までで指定してください。");
     }
-    
+    if (requireSnPrefix && !data.isSnValidated) {
+        errMessages.push("・シリアルキーを入力し、確認ボタンを押してください。");
+    }
+
     if (errMessages.length === 0) {
         return "";
     } else if(errMessages.length === 3) {
