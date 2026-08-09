@@ -200,7 +200,7 @@ const InputForm = (props) => {
                 <p><label htmlFor="orderForm-email">メールアドレス</label></p>
             </Col>
             <Col xs="12" md="9" className="pb-2 mb-2">
-                <input name="email" value={formData.email} onChange={handleChange} className="form-control" id="orderForm-email" type="text"/>
+                <input name="email" value={formData.email} onChange={handleChange} className="form-control" id="orderForm-email" type="email"/>
             </Col>
             <Col xs="6" md="3">
                 <p><label htmlFor="orderForm-quantity">購入個数</label></p>
