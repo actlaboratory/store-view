@@ -125,7 +125,7 @@ const ConfirmOrder = (props) => {
                 <p><label htmlFor="confirmForm_code">認証コード</label></p>
             </Col>
             <Col xs="6" md="6" className="mb-2">
-                <input name="confirmationCode" onChange={handleChange} id="confirmForm_code" className="form-control" />
+                <input name="confirmationCode" onChange={handleChange} onKeyDown={(e) => { if (e.key === "Enter" && successButton) handleSubmit(); }} id="confirmForm_code" className="form-control" />
             </Col>
         </Row>
         <Row className="p2 mt-2">
@@ -150,6 +150,9 @@ const sendOrder = (formData, setMessage, setFormData, setOrderStep, setSerialnum
     let requestData = {...formData};
     if (formData.isCouponApplied) {
         requestData.couponCode = formData.couponCode;
+    }
+    if (formData.isSnValidated) {
+        requestData.serial_number = formData.serialNumber;
     }
 
     axios.post(settings.apiUrl + "order", requestData).then((r) => {
