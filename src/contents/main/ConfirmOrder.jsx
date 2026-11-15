@@ -157,7 +157,7 @@ const sendOrder = (formData, setMessage, setFormData, setOrderStep, setSerialnum
 
     axios.post(settings.apiUrl + "order", requestData).then((r) => {
         if   ((typeof r.data) != "object") {
-            return window.location = "/error";
+            return window.location = "error";
         }
 
         if (r.data.code === 200 && r.data.type === "finished") {

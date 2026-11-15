@@ -73,7 +73,7 @@ function getProductInformation(id, func){
   axios.get(settings.apiUrl + "getproduct?productid=" + id).then((r) => {
 //    return console.log(r.data);
     if   ((typeof r.data) != "object") {
-      return window.location = "/error";
+      return window.location = "error";
     }
     if ((r.data.software)) {
       return func({
@@ -95,7 +95,7 @@ function getPayjpPubKey(setPayjpPubKey) {
   axios.get(settings.apiUrl + "payjp_pubkey").then((r) => {
     setPayjpPubKey(r.data);
   }).catch((E) => {
-    window.location = "/error";
+    window.location = "error";
   })
 }
 
