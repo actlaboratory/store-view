@@ -1,0 +1,7 @@
+allowBuilds:
+  '@parcel/watcher': true
+  esbuild: true
+
+# Minimum package release age: 3 days (4320 minutes)
+# This prevents installing packages that were published too recently
+minimumReleaseAge: 4320
