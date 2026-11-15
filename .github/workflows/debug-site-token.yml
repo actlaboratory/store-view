@@ -1,0 +1,28 @@
+# 一時的な確認用ワークフロー。site用トークンの問題が解決したら削除する。
+name: Debug site token
+
+on:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check token with API and git
+        env:
+          T: ${{ secrets.ACTLAB_AUTO_GITHUB_PERSONAL_ACCESS_TOKEN }}
+        run: |
+          if [ -z "$T" ]; then echo "token is EMPTY"; exit 1; fi
+          echo "token length: ${#T}"
+          curl -s -o /dev/null -w "user: %{http_code}\n" -H "Authorization: token $T" https://api.github.com/user
+          curl -s -o /dev/null -w "site: %{http_code}\n" -H "Authorization: token $T" https://api.github.com/repos/actlaboratory/site
+          git ls-remote "https://x-access-token:${T}@github.com/actlaboratory/site.git" HEAD > /dev/null && echo "git ls-remote: OK"
+
+      - name: Checkout site repository (same as deploy workflow)
+        uses: actions/checkout@v6
+        with:
+          repository: actlaboratory/site
+          path: site-repo
+          token: ${{ secrets.ACTLAB_AUTO_GITHUB_PERSONAL_ACCESS_TOKEN }}
+          persist-credentials: false
