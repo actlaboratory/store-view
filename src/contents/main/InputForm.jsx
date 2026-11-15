@@ -146,7 +146,7 @@ const InputForm = (props) => {
         props.setOrderFormData(submitData);
         axios.post(settings.apiUrl + "setemail", {"email": formData.email}).then((r)=> {
             if   ((typeof r.data) != "object") {
-                return window.location = "/error";
+                return window.location = "error";
             }
             if (r.data.code === 200) {
                 props.setOrderStep(constants.ORDER_STEP_CONFIRM);

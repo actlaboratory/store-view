@@ -124,7 +124,7 @@ const createOrder = (cardToken, props, setModal) => {
     }).then((v) => {
         if ((typeof v.data) != "object") {
             return;
-            //return window.location = "/error";
+            //return window.location = "error";
         }
         if (v.data.code === 200 && v.data.type === "finished") {
             props.setSerialnumbers(v.data.serialnumbers);
